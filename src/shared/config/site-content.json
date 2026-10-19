@@ -1,0 +1,241 @@
+{
+  "home": {
+    "hero": {
+      "identity": "KUMINOVVV  /  ЛИЧНЫЙ БРЕНД",
+      "greeting": "Привет, я Илья.",
+      "titleLine": "Соединяю идеи",
+      "titleAccent": "и технологии.",
+      "description": "Frontend-разработчик с 6+ годами коммерческого опыта. Создаю сложные интерфейсы, разбираюсь в архитектуре и превращаю технические задачи в понятные решения.",
+      "primaryAction": { "label": "Посмотреть работы", "href": "/projects" },
+      "secondaryAction": { "label": "Моё резюме", "href": "/resume" },
+      "stats": [
+        { "value": "6+ лет", "label": "коммерческого опыта" },
+        { "value": "React / TS", "label": "основной стек" },
+        { "value": "Архитектура", "label": "и сложные интерфейсы" }
+      ],
+      "portraitSrc": "/design/home/hero-portrait.webp",
+      "portraitAlt": "Илья в наушниках на зелёном фоне",
+      "brand": "KUMINOVVV",
+      "brandDescription": "Идеи. Интерфейсы. Люди.",
+      "brandCategory": "PERSONAL / IDENTITY",
+      "brandSince": "в IT с 2020",
+      "separatorText": "Изучайте проекты и опыт — за каждым блоком реальные задачи и решения."
+    },
+    "approach": {
+      "title": "Код. Структура. Результат.",
+      "description": "Три вещи, которые для меня важны в работе.",
+      "items": [
+        { "eyebrow": "01 / ИНТЕРФЕЙСЫ", "title": "Понятный UI", "description": "Сложная логика — простые действия.", "image": "approach-ui.webp" },
+        { "eyebrow": "02 / АРХИТЕКТУРА", "title": "Чистая структура", "description": "Код, с которым удобно работать.", "image": "approach-architecture.webp" },
+        { "eyebrow": "03 / РЕЗУЛЬТАТ", "title": "Решение задачи", "description": "Делаю то, что действительно нужно.", "image": "approach-result.webp" }
+      ],
+      "banner": { "title": "За словами — реальные задачи.", "description": "Подробнее — в опыте работы и проектах.", "href": "/resume", "label": "Смотреть опыт" }
+    },
+    "experience": {
+      "title": "Работаю с реальными задачами.",
+      "description": "Две команды. Разные продукты. Общий фокус — удобные интерфейсы.",
+      "asideLabel": "МОЙ ПУТЬ В РАЗРАБОТКЕ",
+      "asideStart": "2020",
+      "asideEnd": "Сейчас",
+      "jobs": [
+        { "period": "11.2024 — сейчас", "status": "ТЕКУЩЕЕ МЕСТО", "name": "Газпром ВНИИГАЗ", "role": "Ведущий специалист · Frontend / React", "description": "Корпоративные SPA, табличные редакторы и клиентская логика работы с данными.", "tags": ["React", "TypeScript", "FSD", "Canvas API", "RTK"], "university": false, "action": "Перейти", "href": "/projects/gazprom-interfaces" },
+        { "period": "09.2020 — 09.2024", "status": "ПРЕДЫДУЩИЙ ОПЫТ", "name": "ОмГУ им. Ф. М. Достоевского", "role": "Frontend-разработчик", "description": "Frontend-модули eService, интеграции с REST API и управление состоянием через MobX.", "tags": ["React", "TypeScript", "SPA", "REST API"], "university": true, "action": "Перейти", "href": "/projects/#omsu" }
+      ],
+      "banner": { "title": "От интерфейсов — к инженерным решениям.", "description": "Подробности, проекты и задачи — в моём резюме.", "href": "/resume", "label": "Читать резюме" }
+    },
+    "projects": {
+      "title": "От идеи до работающей системы.",
+      "description": "Проектирую продуктовые сценарии, реализую клиентскую и серверную логику, работаю с архитектурой и данными.",
+      "asideLabel": "В ЭТОМ РАЗДЕЛЕ",
+      "asideText": "3 из 7",
+      "items": [
+        { "number": "01 / СОЦИАЛЬНАЯ СЕТЬ", "name": "Soobota", "slug": "soobota", "copy": "Социальная платформа: публикации, сообщества и асинхронная модерация.", "role": "Продуктовая концепция, UX/UI, frontend на Next.js и backend на Go.", "tags": ["Next.js", "TypeScript", "Go", "Redis"], "preview": "social" },
+        { "number": "02 / ПОИСК ЖИЛЬЯ", "name": "SPB Rent", "slug": "spb-rent", "copy": "Агрегатор Telegram-объявлений с фильтрацией и поиском на карте.", "role": "Обработка и классификация данных, серверный API, каталог и карта.", "tags": ["Next.js", "Go", "Leaflet", "PostgreSQL"], "preview": "rent" },
+        { "number": "03 / ТЕХНИЧЕСКИЙ КЕЙС", "name": "Разметка изображений", "slug": "image-annotation", "copy": "Интерактивный инструмент выделения и разметки областей изображения.", "role": "Логика координат, масштабирования и взаимодействия с Canvas API.", "tags": ["React", "TypeScript", "Canvas API"], "preview": "canvas" }
+      ],
+      "banner": { "title": "Хотите узнать больше о моей работе?", "description": "Расскажу о решениях и технических деталях.", "href": "/contacts", "label": "Связаться" }
+    },
+    "stack": {
+      "title": "Мой рабочий инструментарий.",
+      "description": "То, чем решаю задачи каждый день.",
+      "asideLabel": "ОСНОВНАЯ СПЕЦИАЛИЗАЦИЯ",
+      "asideText": "Frontend",
+      "primary": {
+        "eyebrow": "01 / ОСНОВНОЙ СТЕК",
+        "title": "React + TypeScript",
+        "description": "Создаю интерфейсы и сложную клиентскую логику.",
+        "tags": ["React", "TypeScript", "Next.js"],
+        "status": "В РАБОТЕ",
+        "caption": "Коммерческие проекты и личные сервисы"
+      },
+      "cards": [
+        { "id": "interfaces", "label": "ИНТЕРФЕЙСЫ", "title": "UI и данные", "tags": ["AG Grid", "Canvas API", "Sass"] },
+        { "id": "architecture", "label": "ОРГАНИЗАЦИЯ КОДА", "title": "Архитектура", "tags": ["FSD", "Redux Toolkit", "REST API"] },
+        { "id": "quality", "label": "ПРОВЕРКА И РЕЛИЗЫ", "title": "Качество", "tags": ["Playwright", "Git", "GitLab CI/CD"] },
+        { "id": "backend", "label": "ИНТЕГРАЦИИ", "title": "Backend", "tags": ["Go", "PostgreSQL", "Redis"] }
+      ],
+      "banner": { "title": "Инструменты меняются. Подход остаётся.", "description": "Главное — решить задачу понятно и надёжно.", "href": "/resume", "label": "Моё резюме" }
+    },
+    "contacts": {
+      "title": "Давайте знакомиться.",
+      "description": "Работа, проекты, новые знакомства — пишите напрямую.",
+      "brandName": "KUMINOVVV",
+      "brandSubtitle": "Личный сайт",
+      "availability": "●　 НА СВЯЗИ / KUMINOVVV",
+      "callTitleLine": "Есть задача?",
+      "callTitleAccent": "Обсудим.",
+      "callDescription": "Ищу интересные задачи, где пригодятся мой опыт и внимание к деталям.",
+      "interests": ["В КОМАНДУ", "ПРОЕКТЫ", "ЗНАКОМСТВО"],
+      "closingLine": "Работаю с кодом.",
+      "closingAccent": "Думаю о людях.",
+      "closingDescription": "Интерфейсы, опыт и решения.",
+      "callNote": "●　Можно просто написать пару строк.",
+      "channels": [
+        { "kind": "EMAIL", "number": "01", "title": "kuminovvv@mail.ru", "href": "mailto:kuminovvv@mail.ru", "description": "Для предложений и подробных вопросов.", "action": "Написать письмо", "external": false },
+        { "kind": "TELEGRAM", "number": "02", "title": "@kuminovvv", "href": "https://t.me/kuminovvv", "description": "Если удобнее обсудить всё в переписке.", "action": "Открыть Telegram", "external": true }
+      ],
+      "brandStatement": "Kuminovvv — это мой личный бренд.",
+      "brandExplanation": "Портфолио, опыт и способ связаться.",
+      "shareTitle": "Знаете, кому может пригодиться мой опыт?",
+      "shareDescription": "Просто отправьте этому человеку ссылку на мой сайт."
+    }
+  },
+  "stackPage": {
+    "intro": {
+      "eyebrow": "ИНСТРУМЕНТЫ / РЕАЛЬНЫЕ ЗАДАЧИ",
+      "title": "Стек, с которым я создаю продукты.",
+      "description": "От пользовательского интерфейса до API, данных и выпуска изменений.",
+      "focusLabel": "МОЯ СПЕЦИАЛИЗАЦИЯ",
+      "focus": "Frontend",
+      "focusDescription": "И сложная клиентская логика"
+    },
+    "primary": [
+      {
+        "kind": "frontend",
+        "eyebrow": "01 / ОСНОВА",
+        "category": "FRONTEND",
+        "title": "React + TypeScript",
+        "description": "Компоненты, интерфейсы, стили и интеграции с API.",
+        "technologies": [
+          "React",
+          "TypeScript",
+          "Next.js",
+          "Tailwind CSS",
+          "shadcn/ui"
+        ]
+      },
+      {
+        "kind": "backend",
+        "eyebrow": "02 / СЕРВЕР И ДАННЫЕ",
+        "category": "BACKEND",
+        "title": "Go + PostgreSQL",
+        "description": "API, хранение данных и серверная логика личных продуктов.",
+        "technologies": [
+          "Go",
+          "PostgreSQL",
+          "Redis",
+          "RabbitMQ",
+          "Docker"
+        ]
+      }
+    ],
+    "capabilities": [
+      {
+        "category": "03 / СЛОЖНЫЕ ИНТЕРФЕЙСЫ",
+        "title": "UI и данные",
+        "description": "Таблицы с редактированием, графика и визуальные инструменты.",
+        "technologies": [
+          "AG Grid",
+          "Canvas API",
+          "Sass"
+        ]
+      },
+      {
+        "category": "04 / КЛИЕНТСКАЯ ЛОГИКА",
+        "title": "FSD и архитектура",
+        "description": "Feature-Sliced Design, управление состоянием и API-интеграции.",
+        "technologies": [
+          "FSD",
+          "Redux Toolkit",
+          "REST API"
+        ]
+      },
+      {
+        "category": "05 / ПРОВЕРКА И ДОСТАВКА",
+        "title": "Качество и релизы",
+        "description": "Тесты, контроль версий и автоматизация выпуска.",
+        "technologies": [
+          "Playwright",
+          "Git",
+          "GitLab CI/CD"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "category": "ПРАКТИКА / 01",
+        "title": "Газпром ВНИИГАЗ",
+        "description": "Работа с данными и сложными таблицами",
+        "technologies": "React · TypeScript · AG Grid",
+        "href": "/projects/gazprom-interfaces"
+      },
+      {
+        "category": "ПРАКТИКА / 02",
+        "title": "Soobota",
+        "description": "Социальная сеть для родителей",
+        "technologies": "Next.js · Go · PostgreSQL",
+        "href": "/projects/soobota"
+      },
+      {
+        "category": "ПРАКТИКА / 03",
+        "title": "Разметка изображений",
+        "description": "Визуальная разметка на Canvas",
+        "technologies": "React · TypeScript · Canvas API",
+        "href": "/projects/image-annotation"
+      }
+    ],
+    "banner": {
+      "title": "Технологии важны в контексте задач.",
+      "description": "В проектах — что именно я разработал и зачем.",
+      "label": "Смотреть проекты",
+      "href": "/projects"
+    }
+  },
+  "pages": {
+    "resume": { "title": "Опыт и практика.", "description": "Коммерческая разработка интерфейсов, работа с командами, архитектурой и сложными продуктами.", "detail": "ОПЫТ / КОМАНДЫ / КОМПЕТЕНЦИИ", "number": "2020", "numberLabel": "начало работы в IT", "nextHref": "/contacts", "nextLabel": "Связаться" },
+    "contacts": { "title": "Всегда на связи.", "description": "По вопросам сотрудничества, рабочих задач или просто для знакомства — пишите напрямую.", "detail": "EMAIL / TELEGRAM", "number": "02", "numberLabel": "способа связаться", "nextHref": "/projects", "nextLabel": "Посмотреть проекты" }
+  },
+  "catalog": {
+    "intro": { "eyebrow": "МОИ РАБОТЫ / КЕЙСЫ", "title": "Проекты по направлениям.", "description": "Коммерческая разработка, собственные продукты и технические решения.", "counterLabel": "ПОРТФОЛИО", "counterValue": "7 кейсов", "counterNote": "3 реализованных + концепция · 2 личных · технический" },
+    "commercialHeading": { "title": "Коммерческие проекты", "meta": "01–04 / ОПЫТ РАБОТЫ" },
+    "personalHeading": { "title": "Личные проекты", "meta": "05–06 / СОБСТВЕННЫЕ ПРОДУКТЫ" },
+    "technicalHeading": { "title": "Технические кейсы", "meta": "07 / ИНСТРУМЕНТЫ" },
+    "university": { "title": "ОмГУ им. Ф. М. Достоевского", "description": "Портал электронных сервисов · eservice.omsu.ru", "count": "3 проекта" },
+    "company": { "title": "Газпром ВНИИГАЗ", "description": "Корпоративная разработка · интерфейсы и инструменты для работы с данными", "count": "1 проект" },
+    "omsuCases": [
+      { "slug": "omsu-portfolio", "number": "01", "label": "РЕАЛИЗОВАНО", "mark": "01", "title": "Моё портфолио", "description": "Frontend-модуль eService: пользовательские сценарии, состояние MobX и REST API.", "stack": "React · TypeScript · MobX · REST API", "href": "https://eservice.omsu.ru/portfolio/" },
+      { "slug": "omsu-schedule", "number": "02", "label": "РЕАЛИЗОВАНО", "mark": "02", "title": "Расписание занятий", "description": "Самостоятельный сервис: клиентская логика расписания, MobX и интеграция с API.", "stack": "React · TypeScript · MobX · REST API", "href": "https://eservice.omsu.ru/schedule/" },
+      { "slug": "eservice-redesign", "number": "03", "label": "НЕ ВНЕДРЁН", "mark": "UI", "title": "Редизайн eService", "description": "UX/UI-концепция главной страницы портала: структура, композиция и визуальная иерархия.", "stack": "UX/UI · Дизайн-концепция · MobX", "href": "" }
+    ],
+    "gazpromCase": { "slug": "gazprom-interfaces", "number": "04 / ГАЗПРОМ ВНИИГАЗ · FRONTEND", "title": "Корпоративные интерфейсы", "description": "Разработка корпоративных SPA, табличных редакторов и прикладной логики работы с данными.", "stack": "React · TypeScript · Redux Toolkit (RTK) · AG Grid", "brand": "G.", "preview": "gazprom", "action": "", "href": "" },
+    "personalCases": [
+      { "slug": "soobota", "number": "05 / ЛИЧНЫЙ ПРОДУКТ", "title": "Soobota", "description": "Full-stack социальная платформа: публикации, сообщества, авторизация и асинхронная модерация.", "stack": "Next.js · TypeScript · Go · PostgreSQL", "brand": "S.", "preview": "soobota", "action": "Открыть кейс", "href": "https://soobota.com/" },
+      { "slug": "spb-rent", "number": "06 / ЛИЧНЫЙ ПРОДУКТ", "title": "SPB Rent", "description": "Агрегатор Telegram-объявлений: сбор данных, классификация, фильтры и интерактивная карта.", "stack": "Next.js · Go · Leaflet · PostgreSQL", "brand": "SPB", "preview": "rent", "action": "", "href": "https://github.com/kuminovvv/rent-hub" }
+    ],
+    "technicalCases": [
+      { "slug": "image-annotation", "number": "07 / ТЕХНИЧЕСКИЙ КЕЙС", "title": "Разметка изображений", "description": "Инструмент выделения областей изображений: Canvas API, координаты и масштабирование.", "stack": "React · TypeScript · Canvas API", "href": "" }
+    ],
+    "closing": { "title": "Рабочий опыт и собственные продукты.", "description": "Здесь — задачи, мой вклад и технологии каждого проекта.", "signature": "KUMINOVVV" }
+  },
+  "footer": {
+    "brand": "KUMINOVVV",
+    "subtitle": "Личный сайт и портфолио",
+    "description": "Интерфейсы, инженерные решения и работа над идеями.",
+    "tag": "КОМПЕТЕНЦИИ + ИДЕИ",
+    "navigationTitle": "НАВИГАЦИЯ",
+    "contactTitle": "СВЯЗАТЬСЯ СО МНОЙ",
+    "copyright": "© 2026 Kuminovvv",
+    "note": "Сделано с вниманием к деталям.",
+    "topLabel": "Наверх"
+  }
+}
