@@ -5,6 +5,13 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  {
+    files: ["src/**/*.{ts,tsx}"],
+    rules: {
+      "func-style": ["error", "expression", { allowArrowFunctions: true }],
+      "max-lines": ["error", { max: 250, skipBlankLines: false, skipComments: false }],
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
