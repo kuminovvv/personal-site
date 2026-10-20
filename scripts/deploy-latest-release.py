@@ -42,7 +42,7 @@ def get_release() -> dict | None:
 
 
 def download(url: str, target: Path, expected_hash: str) -> None:
-    if not url.startswith("https://github.com/Kuminovvv/personal-site/releases/download/"):
+    if not url.startswith("https://github.com/kuminovvv/personal-site/releases/download/"):
         raise ValueError("Unexpected release asset URL")
     digest = hashlib.sha256()
     size = 0
@@ -75,7 +75,7 @@ def unpack(archive: Path, destination: Path) -> None:
 def check_site() -> None:
     for path in ("/", "/projects/", "/projects/soobota/", "/contacts/"):
         subprocess.run(
-            ["curl", "--fail", "--silent", "--show-error", "--max-time", "12",
+            ["curl", "--noproxy", "*", "--fail", "--silent", "--show-error", "--max-time", "12",
              "--resolve", "kuminovvv.com:443:127.0.0.1", "-o", "/dev/null", f"https://kuminovvv.com{path}"],
             check=True,
         )
@@ -120,6 +120,7 @@ def deploy() -> int:
     try:
         download(asset["browser_download_url"], archive, expected.removeprefix("sha256:"))
         unpack(archive, staging)
+        staging.chmod(0o755)
         staging.rename(target)
         temp_link = ROOT / f".current-{name}"
         temp_link.symlink_to(target, target_is_directory=True)
