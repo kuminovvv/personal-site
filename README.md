@@ -42,3 +42,5 @@ pnpm run test:integrity
 Сгенерированные страницы не зависят от Go/PostgreSQL. При изменении данных, изображений или кейсов повторно запустите `pnpm run build`. Канонические ссылки и sitemap добавляются после определения постоянного публичного адреса сайта — localhost для них не используется.
 
 Конвенции проекта: `AGENTS.md`, `docs/README.md`, `docs/frontend-conventions.md`.
+
+Публикация автоматически выполняется по Git-тегам `vMAJOR.MINOR.PATCH` через GitHub Actions и GitHub Releases. Настройка и диагностика: [docs/deploy-by-tags.md](docs/deploy-by-tags.md).

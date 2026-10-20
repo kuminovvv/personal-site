@@ -1,0 +1,102 @@
+name: Publish tagged release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: personal-site-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Verify, build and publish
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout the exact tag
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Validate release source
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || {
+            echo "Only stable SemVer tags (v1.2.3) can deploy." >&2
+            exit 1
+          }
+          git fetch --no-tags origin master
+          git merge-base --is-ancestor HEAD origin/master || {
+            echo "The tag must point to a commit on master." >&2
+            exit 1
+          }
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Install Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: TypeScript check
+        run: pnpm exec tsc --noEmit
+
+      - name: ESLint
+        run: pnpm run lint
+
+      - name: Build static website
+        run: pnpm run build
+
+      - name: Check exported pages and links
+        run: pnpm run test:integrity
+
+      - name: Install Python and Playwright
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install browser dependencies
+        run: |
+          python -m pip install "playwright==1.56.0"
+          python -m playwright install --with-deps chromium
+
+      - name: Check responsive pages
+        run: pnpm run test:responsive
+
+      - name: Pack only static output
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s out/index.html
+          tar -C out -czf "${RUNNER_TEMP}/site.tar.gz" .
+          sha256sum "${RUNNER_TEMP}/site.tar.gz"
+
+      - name: Publish GitHub Release for server deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          asset="${RUNNER_TEMP}/site.tar.gz#site.tar.gz"
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "$asset" --repo "$GITHUB_REPOSITORY" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "$asset" \
+              --repo "$GITHUB_REPOSITORY" \
+              --verify-tag \
+              --latest \
+              --title "Personal Site $GITHUB_REF_NAME" \
+              --notes "Проверенная статическая сборка personal-site из коммита $GITHUB_SHA. Сервер автоматически загрузит этот релиз."
+          fi
