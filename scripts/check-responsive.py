@@ -111,7 +111,8 @@ def run() -> int:
                 for theme in THEMES:
                     context = browser.new_context(viewport={"width": 1440, "height": 900})
                     context.add_init_script(
-                        f"localStorage.setItem('portfolio-theme', '{theme}')"
+                        f"localStorage.setItem('portfolio-theme', '{theme}'); "
+                        "localStorage.setItem('portfolio-locale', 'ru');"
                     )
                     context.route("**/*__next*", lambda route: route.abort())
                     page = context.new_page()
