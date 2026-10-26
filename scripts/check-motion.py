@@ -68,8 +68,55 @@ def desktop(page, url):
             assert 0 < opacity < 1, opacity
             assert 0 < backdrop < 1, backdrop
         page.wait_for_timeout(350)
+        bounds = dialog.bounding_box()
+        viewport = page.viewport_size
+        assert abs(bounds["x"]) < 1 and abs(bounds["y"]) < 1, bounds
+        assert abs(bounds["width"] - viewport["width"]) < 1, bounds
+        assert abs(bounds["height"] - viewport["height"]) < 1, bounds
+        assert dialog.evaluate("e => getComputedStyle(e).backgroundColor") == "rgb(255, 255, 255)"
+        assert dialog.evaluate("e => getComputedStyle(e, '::backdrop').backgroundColor") == "rgb(255, 255, 255)"
         assert dialog.get_attribute("aria-modal") == "true" and dialog.get_attribute("role") == "dialog"
         assert page.evaluate("document.body.style.overflow") == "hidden"
+        if index == 0:
+            content = dialog.locator("[data-project-dialog-content]")
+            content_box = content.bounding_box()
+            assert content_box["height"] < viewport["height"] - 80, content_box
+            top_gap = content_box["y"]
+            bottom_gap = viewport["height"] - content_box["y"] - content_box["height"]
+            assert top_gap >= 24 and bottom_gap >= 24, (top_gap, bottom_gap)
+            assert abs(top_gap - bottom_gap) <= 3, (top_gap, bottom_gap, dialog.evaluate("e => ({display:getComputedStyle(e).display, justify:getComputedStyle(e).justifyContent, height:e.clientHeight, scrollHeight:e.scrollHeight, contentMargin:getComputedStyle(e.firstElementChild.nextElementSibling).margin})"))
+            page.mouse.move(10, 160)
+            expect(dialog.locator("[data-visible]")).to_have_attribute("data-visible", "true")
+            assert dialog.evaluate("e => getComputedStyle(e).cursor") == "none"
+            assert dialog.locator("[data-visible]").evaluate(
+                "e => Math.abs(e.getBoundingClientRect().left + e.offsetWidth/2 - 10) < 1"
+            )
+            page.mouse.move(viewport["width"] - 1, top_gap / 2)
+            assert dialog.evaluate("e => e.scrollWidth <= e.clientWidth + 1"), dialog.evaluate(
+                "e => ({scrollWidth:e.scrollWidth, clientWidth:e.clientWidth, cursor:getComputedStyle(e).cursor})"
+            )
+            page.evaluate("window.dispatchEvent(new Event('blur'))")
+            expect(dialog.locator("[data-visible]")).to_have_attribute("data-visible", "false")
+            assert dialog.evaluate("e => getComputedStyle(e).cursor") != "none"
+            assert dialog.evaluate("e => e.scrollWidth <= e.clientWidth + 1")
+            for width in (320, 390, 768, 1024, 1440, 1920):
+                page.set_viewport_size({"width": width, "height": 1000})
+                page.mouse.move(width - 1, 4)
+                assert dialog.evaluate("e => e.scrollWidth <= e.clientWidth + 1"), (width, dialog.evaluate(
+                    "e => ({scrollWidth:e.scrollWidth, clientWidth:e.clientWidth})"))
+                page.evaluate("window.dispatchEvent(new Event('blur'))")
+                assert dialog.evaluate("e => e.scrollWidth <= e.clientWidth + 1"), width
+            page.set_viewport_size(viewport)
+            page.mouse.move(viewport["width"] / 2, content_box["y"] + content_box["height"]/2)
+            expect(dialog.locator("[data-visible]")).to_have_attribute("data-visible", "false")
+            assert dialog.evaluate("e => getComputedStyle(e).cursor") != "none"
+            page.mouse.move(viewport["width"] / 2, top_gap / 2)
+            expect(dialog.locator("[data-visible]")).to_have_attribute("data-visible", "true")
+            assert dialog.evaluate("e => getComputedStyle(e).cursor") == "none"
+            page.mouse.move(viewport["width"] / 2, viewport["height"] - bottom_gap / 2)
+            expect(dialog.locator("[data-visible]")).to_have_attribute("data-visible", "true")
+            assert dialog.evaluate("e => getComputedStyle(e).cursor") == "none"
+            page.mouse.move(viewport["width"] / 2, content_box["y"] + content_box["height"]/2)
         for _ in range(6):
             page.keyboard.press("Tab")
             assert dialog.evaluate("e=>e.contains(document.activeElement)")
@@ -81,7 +128,7 @@ def desktop(page, url):
         assert cards.nth(index).evaluate("e=>document.activeElement===e")
         after = page.evaluate("({y:scrollY,x:document.querySelector('[data-gallery-rail]').scrollLeft})")
         assert abs(before["y"]-after["y"]) <= 1 and abs(before["x"]-after["x"]) <= 1, (before, after)
-    print("PASS: all five modal enter/exit transitions, backdrop fade, focus trap/restore and scroll lock")
+    print("PASS: five white viewport modals, vertically centered content, cursor-replacing cross in all margins, focus and scroll lock")
 
     cards.first.click()
     expect(page.locator("dialog[open]")).to_be_visible()
@@ -124,18 +171,22 @@ def desktop(page, url):
     page.wait_for_url("**/?previous=direct")
     print("PASS: rapid Back/Forward, all UI close methods preserve history, direct URL, query/hash preservation")
 
+    page.wait_for_load_state("networkidle")
     rail = page.locator(RAIL)
     rail.evaluate("e=>e.scrollLeft=0")
-    page.get_by_role("button", name="Следующий проект", exact=True).click()
+    assert page.locator("#projects [aria-live]").count() == 0
+    assert page.get_by_role("button", name="Следующий проект", exact=True).count() == 0
+    rail.focus()
+    expect(rail).to_be_focused()
+    page.keyboard.press("ArrowRight")
     page.wait_for_timeout(650)
-    expect(page.locator("#projects [aria-live]")).to_have_text("02 / 05")
+    assert abs(rail.evaluate("e=>e.scrollLeft") - 432) < 2, rail.evaluate("e=>({position:e.scrollLeft,active:document.activeElement===e, state:location.href})")
     rail.evaluate("e=>e.scrollLeft=1296")
     page.wait_for_timeout(180)
-    expect(page.locator("#projects [aria-live]")).to_have_text("04 / 05")
     rail.evaluate("e=>e.scrollLeft=400")
     page.wait_for_timeout(700)
     assert abs(rail.evaluate("e=>e.scrollLeft") - 432) < 2
-    print("PASS: controls and counter reflect actual scrolling; soft proximity snap")
+    print("PASS: no gallery counter/buttons; keyboard scrolling and soft proximity snap")
 
     page.locator(ART).scroll_into_view_if_needed()
     page.wait_for_timeout(1000)

@@ -9,7 +9,7 @@ const sitemap = (): MetadataRoute.Sitemap => {
   const paths = ["/", "/projects/", "/stack/", "/resume/", "/contacts/", ...projectCases.map(({ slug }) => `/projects/${slug}/`)];
   return paths.flatMap((path) => (["ru", "en"] as const).map((locale) => ({
     url: origin + localizeHref(path, locale),
-    alternates: { languages: { ru: origin + path, en: origin + localizeHref(path, "en") } },
+    alternates: { languages: { ru: origin + localizeHref(path, "ru"), en: origin + localizeHref(path, "en") } },
   })));
 };
 

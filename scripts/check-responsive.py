@@ -96,7 +96,12 @@ def run() -> int:
         "/" + str(path.parent.relative_to(OUT)).replace("\\", "/").strip("./") + "/"
         for path in OUT.rglob("index.html")
     ]
-    routes = sorted(set("/" if route == "//" else route for route in routes))
+    # Legacy unprefixed pages redirect at document startup. Validate those
+    # redirects in test:i18n; layout measurements belong to stable locale URLs.
+    routes = sorted({
+        route for route in routes
+        if route.startswith(("/ru/", "/en/")) or route in ("/404/", "/_not-found/")
+    })
     server = QuietServer(("127.0.0.1", 0), Handler)
     Thread(target=server.serve_forever, daemon=True).start()
     failures = []

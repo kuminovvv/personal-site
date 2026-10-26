@@ -27,7 +27,7 @@ export const createPageMetadata = (locale: Locale, path: string, title: string, 
   const copy = getMetadataCopy(locale);
   return {
     metadataBase: new URL("https://kuminovvv.com"), title, description,
-    alternates: { canonical: url, languages: { ru: route, en: localizeHref(route, "en"), "x-default": route } },
+    alternates: { canonical: url, languages: { ru: localizeHref(route, "ru"), en: localizeHref(route, "en"), "x-default": route } },
     openGraph: { title, description, url, locale: locale === "en" ? "en_US" : "ru_RU", alternateLocale: [locale === "en" ? "ru_RU" : "en_US"], type: "website", images: [{ url: "/og.png", width: 1200, height: 630, alt: copy.image }] },
     twitter: { card: "summary_large_image", title, description },
     robots: { index: true, follow: true },

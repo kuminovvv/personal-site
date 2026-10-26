@@ -26,6 +26,7 @@ type ProjectModalProps = {
 
 export const ProjectModal = ({ project, locale, isOpen, onCloseAction, onExitedAction }: ProjectModalProps) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const exitCursorRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<Animation[]>([]);
   const closeRef = useRef(false);
   const previousFocusRef = useRef<HTMLElement | null>(null);
@@ -125,6 +126,19 @@ export const ProjectModal = ({ project, locale, isOpen, onCloseAction, onExitedA
     return subscribeMotionPreference(finish);
   }, []);
 
+  useEffect(() => {
+    const resetExitCursor = () => {
+      if (exitCursorRef.current) exitCursorRef.current.dataset.visible = "false";
+      if (dialogRef.current) dialogRef.current.style.cursor = "";
+    };
+    window.addEventListener("blur", resetExitCursor);
+    document.addEventListener("visibilitychange", resetExitCursor);
+    return () => {
+      window.removeEventListener("blur", resetExitCursor);
+      document.removeEventListener("visibilitychange", resetExitCursor);
+    };
+  }, []);
+
   if (!detail || !mounted) return null;
 
   return createPortal(
@@ -138,23 +152,32 @@ export const ProjectModal = ({ project, locale, isOpen, onCloseAction, onExitedA
       aria-describedby="visual-project-lead"
       onCancel={(event) => { event.preventDefault(); close(); }}
       onKeyDown={trapDialogFocus}
-      onPointerDown={(event) => {
-        delete dialogRef.current?.dataset.backdropPointer;
-        const bounds = event.currentTarget.getBoundingClientRect();
-        if (event.target === event.currentTarget && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) event.currentTarget.dataset.backdropPointer = "true";
+      onPointerMove={(event) => {
+        const isOutside = event.pointerType === "mouse" && event.target === event.currentTarget;
+        const cursor = exitCursorRef.current;
+        if (!cursor) return;
+        // The floating cross replaces the native pointer only over free space.
+        event.currentTarget.style.cursor = isOutside ? "none" : "";
+        cursor.dataset.visible = isOutside ? "true" : "false";
+        if (isOutside) {
+          cursor.style.left = `${event.clientX}px`;
+          cursor.style.top = `${event.clientY}px`;
+        }
       }}
-      onPointerCancel={(event) => { delete event.currentTarget.dataset.backdropPointer; }}
+      onPointerLeave={(event) => {
+        event.currentTarget.style.cursor = "";
+        if (exitCursorRef.current) exitCursorRef.current.dataset.visible = "false";
+      }}
       onClick={(event) => {
-        if (event.target !== dialogRef.current) return;
-        if (dialogRef.current.dataset.backdropPointer !== "true") return;
-        delete dialogRef.current.dataset.backdropPointer;
-        const bounds = dialogRef.current.getBoundingClientRect();
-        if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) close();
+        if (event.target === event.currentTarget) close();
       }}
-      className="fixed inset-0 m-auto max-h-[calc(100dvh-48px)] w-[min(1356px,calc(100vw-48px))] max-w-none overflow-y-auto rounded-[25px] bg-white p-0 text-[#17241b] shadow-2xl backdrop:bg-[#0c271b]/90 backdrop:opacity-100 backdrop:transition-opacity backdrop:duration-(--motion-modal) backdrop:ease-(--motion-out) starting:backdrop:opacity-0 data-[closing=true]:backdrop:opacity-0 data-[closing=true]:backdrop:duration-(--motion-exit) site-still:backdrop:transition-none focus:outline-none max-[640px]:max-h-[calc(100dvh-24px)] max-[640px]:w-[calc(100vw-24px)] max-[640px]:rounded-[20px]"
+      className="fixed inset-0 m-0 flex h-[100dvh] max-h-none w-screen max-w-none flex-col justify-center overflow-y-auto overscroll-contain rounded-none border-0 bg-white p-0 py-[clamp(24px,5vh,72px)] text-[#17241b] backdrop:bg-white backdrop:opacity-100 backdrop:transition-opacity backdrop:duration-(--motion-modal) backdrop:ease-(--motion-out) starting:backdrop:opacity-0 data-[closing=true]:backdrop:opacity-0 data-[closing=true]:backdrop:duration-(--motion-exit) site-still:backdrop:transition-none focus:outline-none"
     >
-      <div className="flex flex-col gap-[23px] p-11 max-[900px]:gap-5 max-[900px]:p-7 max-[640px]:gap-4 max-[640px]:p-5">
-        <div className="flex min-h-[35px] items-center justify-between gap-4">
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
+        <div ref={exitCursorRef} data-visible="false" className="absolute flex size-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#17241b] text-[28px] leading-none text-white opacity-0 data-[visible=true]:opacity-100">×</div>
+      </div>
+      <div data-project-dialog-content className="relative mx-auto my-auto flex w-full max-w-[1240px] shrink-0 cursor-auto flex-col gap-[23px] px-11 py-6 max-[900px]:gap-5 max-[900px]:px-7 max-[640px]:gap-4 max-[640px]:px-5 max-[640px]:py-4">
+        <div className="sticky top-0 z-10 flex min-h-[45px] items-center justify-between gap-4 bg-white/95 py-2">
           <span className="font-[family-name:var(--font-visual-mono)] text-[13px] leading-[1.1] tracking-[.0182px] text-[#718076] max-[640px]:text-[10px]">{detail.eyebrow}</span>
           <div className="flex shrink-0 items-center gap-4 max-[640px]:gap-2">
           <LanguageSwitcher locale={locale} className="text-[#284634]" />

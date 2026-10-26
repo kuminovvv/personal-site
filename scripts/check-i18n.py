@@ -70,19 +70,30 @@ def static_checks():
     cases = [*catalog["omsuCases"], catalog["gazpromCase"], *catalog["personalCases"], *catalog["technicalCases"]]
     routes = ["", "projects", "stack", "resume", "contacts", *[f"projects/{case['slug']}" for case in cases]]
     for route in routes:
+        route_suffix = f"{route}/" if route else ""
         for locale in ("ru", "en"):
-            relative = f"en/{route}" if locale == "en" else route
+            relative = f"{locale}/{route}"
             doc = Document((OUT / relative / "index.html").read_text(encoding="utf-8"))
             path = "/" + relative.strip("/") + "/" if relative.strip("/") else "/"
             assert doc.lang == locale, (path, doc.lang)
             assert urlparse(doc.canonical).path == path, (path, doc.canonical)
             assert {"ru", "en", "x-default"}.issubset(doc.alternates), path
+            assert urlparse(doc.alternates["ru"]).path == "/ru/" + route_suffix, path
+            assert urlparse(doc.alternates["en"]).path == "/en/" + route_suffix, path
+            assert urlparse(doc.alternates["x-default"]).path == "/" + route_suffix, path
             if locale == "en":
                 russian = [text for text in doc.text if CYRILLIC.search(text)]
                 assert not russian, (path, russian)
                 for href, language in doc.links:
                     if href.startswith("/") and not href.startswith("//") and language != "ru":
                         assert href == "/en" or href.startswith("/en/"), (path, href)
+            else:
+                for href, language in doc.links:
+                    if href.startswith("/") and not href.startswith("//") and language != "en":
+                        assert href == "/ru" or href.startswith("/ru/"), (path, href)
+        legacy = Document((OUT / route / "index.html").read_text(encoding="utf-8"))
+        assert legacy.lang == "ru", route
+        assert urlparse(legacy.canonical).path == "/ru/" + route_suffix, route
     print(f"PASS: {len(routes) * 2} localized static pages, correct lang/canonical/hreflang, English text and links")
 
 
@@ -92,25 +103,41 @@ def browser_checks(browser, origin):
     page = context.new_page()
     errors = []
     page.on("pageerror", lambda error: errors.append(str(error)))
-    page.goto(origin + "/?project=soobota#projects", wait_until="networkidle")
+    page.goto(origin + "/ru/?project=soobota#projects", wait_until="networkidle")
     dialog = page.get_by_role("dialog")
     expect(dialog).to_be_visible()
+    page.evaluate("""() => {
+        window.modalBeforeSwitch = document.querySelector('dialog[open]');
+        window.homeBeforeSwitch = document.querySelector('[data-visual-home]');
+    }""")
     dialog.get_by_role("link", name="English", exact=True).click()
     page.wait_for_url("**/en/?project=soobota#projects")
     expect(page.locator("html")).to_have_attribute("lang", "en")
     expect(dialog).to_be_visible()
+    assert page.evaluate("document.querySelector('dialog[open]') === window.modalBeforeSwitch")
+    assert page.evaluate("document.querySelector('[data-visual-home]') === window.homeBeforeSwitch")
+    assert page.evaluate("getComputedStyle(document.querySelector('dialog')).opacity") == "1"
     assert not CYRILLIC.search(dialog.inner_text())
+    dialog.get_by_role("link", name="Русский", exact=True).click()
+    page.wait_for_url("**/ru/?project=soobota#projects")
+    expect(dialog).to_be_visible()
+    assert page.evaluate("document.querySelector('dialog[open]') === window.modalBeforeSwitch")
+    assert page.locator("html").get_attribute("lang") == "ru"
+    dialog.get_by_role("link", name="English", exact=True).click()
+    page.wait_for_url("**/en/?project=soobota#projects")
+    expect(dialog).to_be_visible()
+    assert page.evaluate("document.querySelector('dialog[open]') === window.modalBeforeSwitch")
     page.reload(wait_until="networkidle")
     expect(dialog).to_be_visible()
     dialog.get_by_role("link", name="Русский", exact=True).click()
-    page.wait_for_url("**/?project=soobota#projects")
+    page.wait_for_url("**/ru/?project=soobota#projects")
     expect(page.locator("html")).to_have_attribute("lang", "ru")
     expect(dialog).to_be_visible()
     page.keyboard.press("Escape")
     expect(dialog).to_have_count(0)
     page.goto(origin + "/en/resume/", wait_until="networkidle")
     page.get_by_role("navigation", name="Site language", exact=True).first.get_by_role("link", name="Русский", exact=True).press("Enter")
-    page.wait_for_url("**/resume/")
+    page.wait_for_url("**/ru/resume/")
     expect(page.locator("html")).to_have_attribute("lang", "ru")
     print("PASS: language changes preserve page, modal query and anchor; direct reload and keyboard switching work")
 
@@ -145,7 +172,7 @@ def language_motion_checks(browser, origin):
             return originalAnimate.call(this, frames, options);
         };
     """)
-    page.goto(origin + "/", wait_until="networkidle")
+    page.goto(origin + "/ru/", wait_until="networkidle")
     page.wait_for_timeout(1100)
     assert page.evaluate("portfolioRevealCalls.filter(x => x === 'line').length") == 2
     first_card = page.locator("[data-gallery-card]").first
@@ -158,17 +185,30 @@ def language_motion_checks(browser, origin):
     assert first_card.evaluate("e => getComputedStyle(e).opacity === '1'")
     assert page.evaluate("portfolioRevealCalls.filter(x => x === 'card').length") == 0
 
+    before_switch = page.evaluate("portfolioRevealCalls.length")
+    page.evaluate("window.homeBeforeSwitch = document.querySelector('[data-visual-home]')")
     page.get_by_role("navigation", name="Навигация по главной").get_by_role("link", name="English").click()
     page.wait_for_url("**/en/")
     page.wait_for_load_state("networkidle")
-    assert page.locator("html").get_attribute("data-skip-portfolio-motion") == "true"
-    assert page.evaluate("portfolioRevealCalls.length") == 0
+    assert page.evaluate("document.querySelector('[data-visual-home]') === window.homeBeforeSwitch")
+    assert page.evaluate("portfolioRevealCalls.length") == before_switch
     assert page.locator("[data-gallery-card]").first.evaluate("e => getComputedStyle(e).opacity === '1'")
 
     page.get_by_role("navigation", name="Home page navigation").get_by_role("link", name="Русский").click()
-    page.wait_for_url(origin + "/")
+    page.wait_for_url(origin + "/ru/")
     page.wait_for_load_state("networkidle")
-    assert page.evaluate("portfolioRevealCalls.length") == 0
+    assert page.evaluate("portfolioRevealCalls.length") == before_switch
+
+    page.locator("[data-gallery-card]").first.click()
+    expect(page.get_by_role("dialog")).to_be_visible()
+    page.get_by_role("dialog").get_by_role("link", name="English", exact=True).click()
+    page.wait_for_url("**/en/?project=soobota")
+    expect(page.get_by_role("dialog")).to_be_visible()
+    page.keyboard.press("Escape")
+    expect(page.get_by_role("dialog")).to_have_count(0)
+    assert page.url == origin + "/en/", page.url
+    assert page.locator("html").get_attribute("lang") == "en"
+    assert page.get_by_role("navigation", name="Home page navigation").count() == 1
 
     page.goto(origin + "/en/", wait_until="networkidle")
     page.wait_for_timeout(1100)
@@ -191,7 +231,7 @@ def country_defaults_checks(browser, origin):
         page.route("https://ipwho.is/?fields=success,country_code", mock_country)
         page.goto(origin + "/?source=geo#projects", wait_until="networkidle")
         if country == "RU":
-            assert page.url.endswith("/?source=geo#projects")
+            page.wait_for_url("**/ru/?source=geo#projects")
             assert page.locator("html").get_attribute("lang") == "ru"
             assert page.locator("html").get_attribute("data-locale-pending") is None
             assert page.evaluate("sessionStorage.getItem('portfolio-auto-locale')") == "ru"
@@ -205,13 +245,13 @@ def country_defaults_checks(browser, origin):
         else:
             page.wait_for_url("**/en/?source=geo#projects")
             assert page.locator("html").get_attribute("lang") == "en"
-            assert page.locator("html").get_attribute("data-skip-portfolio-motion") == "true"
+            assert page.locator("html").get_attribute("data-skip-portfolio-motion") is None
             assert page.evaluate("sessionStorage.getItem('portfolio-auto-locale')") == "en"
             assert page.evaluate("localStorage.getItem('portfolio-locale')") is None
             page.goto(origin + "/", wait_until="networkidle")
             page.wait_for_url("**/en/")
             page.get_by_role("navigation", name="Home page navigation").get_by_role("link", name="Русский").click()
-            page.wait_for_url(origin + "/")
+            page.wait_for_url(origin + "/ru/")
             assert page.evaluate("localStorage.getItem('portfolio-locale')") == "ru"
             page.reload(wait_until="networkidle")
             assert page.locator("html").get_attribute("lang") == "ru"
@@ -237,6 +277,36 @@ def country_defaults_checks(browser, origin):
     print("PASS: Russian and foreign IP defaults, browser-language fallback, session cache and persistent manual choice")
 
 
+def first_english_visit_motion_checks(browser, origin):
+    for entry in ("country", "cached", "preference", "direct"):
+        context = browser.new_context(viewport={"width": 1440, "height": 1000}, locale="ru-RU")
+        page = context.new_page()
+        page.add_init_script("""window.portfolioRevealCalls = [];
+            const nativeAnimate = Element.prototype.animate;
+            Element.prototype.animate = function(frames, options) {
+                if (this.dataset.motionIntro) window.portfolioRevealCalls.push(this.dataset.motionIntro);
+                return nativeAnimate.call(this, frames, options);
+            };
+        """)
+        if entry == "country":
+            page.route("https://ipwho.is/?fields=success,country_code",
+                       lambda route: route.fulfill(status=200, content_type="application/json",
+                                                   body=json.dumps({"success": True, "country_code": "DE"})))
+        if entry == "cached":
+            page.add_init_script("sessionStorage.setItem('portfolio-auto-locale', 'en');")
+        if entry == "preference":
+            page.add_init_script("localStorage.setItem('portfolio-locale', 'en');")
+        page.goto(origin + ("/en/" if entry == "direct" else "/"), wait_until="networkidle")
+        page.wait_for_url("**/en/")
+        assert page.locator("html").get_attribute("data-skip-portfolio-motion") is None, entry
+        page.wait_for_function("portfolioRevealCalls.filter(kind => kind === 'line').length === 2")
+        assert page.evaluate("portfolioRevealCalls") == ["nav", "line", "line", "description"], entry
+        page.wait_for_timeout(1100)
+        assert len(page.evaluate("portfolioRevealCalls")) == 4, entry
+        context.close()
+    print("PASS: first EN entrance animates after geo, cached or saved locale redirect and direct URL")
+
+
 def run():
     static_checks()
     server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
@@ -251,6 +321,7 @@ def run():
                 browser_checks(browser, f"http://127.0.0.1:{server.server_port}")
                 language_motion_checks(browser, f"http://127.0.0.1:{server.server_port}")
                 country_defaults_checks(browser, f"http://127.0.0.1:{server.server_port}")
+                first_english_visit_motion_checks(browser, f"http://127.0.0.1:{server.server_port}")
             finally:
                 browser.close()
     finally:

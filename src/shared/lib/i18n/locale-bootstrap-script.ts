@@ -1,23 +1,21 @@
 // Runs before the page is painted. Explicit choices always win over IP detection.
-// Country lookup is only needed on RU URLs without an explicit preference.
+// Country lookup is only needed on legacy, unprefixed URLs without an explicit preference.
 export const localeBootstrapScript = String.raw`(function(){
-  if(/^\/en(?:\/|$)/.test(location.pathname))return;
+  if(/^\/(?:ru|en)(?:\/|$)/.test(location.pathname))return;
   var html=document.documentElement;
   var selected;
   try{selected=localStorage.getItem("portfolio-locale")}catch(e){}
-  if(selected==="ru")return;
 
-  var target="/en"+(location.pathname==="/"?"/":location.pathname)+location.search+location.hash;
-  var redirect=function(){
-    try{sessionStorage.setItem("portfolio-language-navigation",target)}catch(e){}
-    location.replace(target);
+  var redirect=function(locale){
+    // Only the language switcher suppresses the intro on intentional RU/EN clicks.
+    // Automatic country/preference redirects should keep the first EN entrance.
+    location.replace("/"+locale+(location.pathname==="/"?"/":location.pathname)+location.search+location.hash);
   };
-  if(selected==="en"){redirect();return}
+  if(selected==="en"||selected==="ru"){redirect(selected);return}
 
   var detected;
   try{detected=sessionStorage.getItem("portfolio-auto-locale")}catch(e){}
-  if(detected==="en"){redirect();return}
-  if(detected==="ru")return;
+  if(detected==="en"||detected==="ru"){redirect(detected);return}
 
   html.dataset.localePending="true";
   var settled=false;
@@ -29,9 +27,7 @@ export const localeBootstrapScript = String.raw`(function(){
     clearTimeout(timer);
     controller.abort();
     try{sessionStorage.setItem("portfolio-auto-locale",locale)}catch(e){}
-    if(locale==="en"){redirect();return}
-    delete html.dataset.localePending;
-    window.dispatchEvent(new Event("portfolio:locale-ready"));
+    redirect(locale);
   };
   var fallback=function(){
     var browserLocale=navigator.languages&&navigator.languages[0]||navigator.language||"ru";

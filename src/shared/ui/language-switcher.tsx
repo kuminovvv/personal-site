@@ -11,7 +11,7 @@ const getCopy = createDictionary("language-switcher", {
   en: { label: "Site language", ru: "Русский", en: "English" },
 });
 const subscribe = (notify: () => void) => {
-  const events = ["popstate", "hashchange", "portfolio:project-change", "portfolio:location-change"];
+  const events = ["popstate", "hashchange", "portfolio:project-change", "portfolio:location-change", "portfolio:locale-change"];
   events.forEach((event) => window.addEventListener(event, notify));
   return () => events.forEach((event) => window.removeEventListener(event, notify));
 };
@@ -39,6 +39,17 @@ export const LanguageSwitcher = (props: { locale: Locale; className?: string }) 
               }
               if (language === locale) {
                 event.preventDefault();
+                return;
+              }
+              if (document.querySelector("[data-visual-home]") && /^\/(?:ru|en)?\/?$/.test(window.location.pathname)) {
+                event.preventDefault();
+                const destination = new URL(event.currentTarget.href);
+                const nextState = { ...window.history.state };
+                // Closing an open modal must remain on the newly chosen language.
+                delete nextState.kuminovProject;
+                window.history.replaceState(nextState, "", destination);
+                document.documentElement.lang = language;
+                window.dispatchEvent(new Event("portfolio:locale-change"));
                 return;
               }
               try {

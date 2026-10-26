@@ -44,6 +44,7 @@ def desktop_checks(page, url):
     page.goto(url)
     rail = page.locator(RAIL)
     expect(rail.locator("button").first).to_be_visible()
+    assert page.locator("#projects > div > div").count() == 1, "Gallery controls or counter were reintroduced"
     page.wait_for_load_state("networkidle")
     for theme in ("light", "dark"):
         page.evaluate("theme => document.documentElement.classList.toggle('dark', theme === 'dark')", theme)

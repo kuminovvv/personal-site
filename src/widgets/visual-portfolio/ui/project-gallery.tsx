@@ -8,7 +8,6 @@ import { useGalleryDrag } from "../model/use-gallery-drag";
 import { useGalleryPosition } from "../model/use-gallery-position";
 import { useProjectLocation } from "../model/use-project-location";
 import { ProjectCard } from "./project-card";
-import { GalleryControls } from "./gallery-controls";
 import { ProjectModal } from "./project-modal";
 import type { Locale } from "@/shared/lib/i18n/locale";
 import { getVisualText } from "../model/locale-content";
@@ -16,7 +15,7 @@ import { getVisualText } from "../model/locale-content";
 export const ProjectGallery = ({ locale = "ru" }: { locale?: Locale }) => {
   const copy = getVisualText(locale);
   const { scrollRef, activityRef, stopAnimation, onPointerDown, onPointerMove, finishDrag, onClickCapture, onPointerLeave } = useGalleryDrag();
-  const { activeIndex, atStart, atEnd, onScroll, cancelSettle, scrollToIndex } = useGalleryPosition(scrollRef, visualProjects.length, activityRef);
+  const { onScroll, cancelSettle } = useGalleryPosition(scrollRef, activityRef);
   const { selected, updateUrl } = useProjectLocation();
   const [presence, setPresence] = useState({ selected, displayed: selected });
   // Keep the last poster mounted during exit, including Back/Forward changes.
@@ -83,7 +82,6 @@ export const ProjectGallery = ({ locale = "ru" }: { locale?: Locale }) => {
         >
           {visualProjects.map((project, index) => <ProjectCard key={project.slug} project={project} index={index} onOpen={open} locale={locale} />)}
         </div>
-        <GalleryControls locale={locale} activeIndex={activeIndex} itemCount={visualProjects.length} atStart={atStart} atEnd={atEnd} onPreviousAction={() => scrollToIndex(Math.max(0, activeIndex - 1))} onNextAction={() => scrollToIndex(Math.min(visualProjects.length - 1, activeIndex + 1))} />
       </div>
       {displayed && <ProjectModal project={visualProjects.find((project) => project.slug === displayed)!} locale={locale} isOpen={selected !== null} onCloseAction={close} onExitedAction={onExited} />}
     </section>
