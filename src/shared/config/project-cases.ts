@@ -1,4 +1,7 @@
 import siteContent from "./site-content.json";
+import { englishProjectCases } from "./project-cases.en";
+import type { Locale } from "@/shared/lib/i18n/locale";
+import { createDictionary } from "@/shared/lib/i18n/dictionary";
 
 export type ProjectCase = {
   slug: string;
@@ -239,5 +242,7 @@ export const projectCases: ProjectCase[] = [
   },
 ];
 
-export const getProjectCase = (slug: string): ProjectCase | undefined =>
-  projectCases.find((item) => item.slug === slug);
+const getCases = createDictionary("cases", { ru: { items: projectCases }, en: { items: englishProjectCases } });
+
+export const getProjectCase = (slug: string, locale: Locale = "ru"): ProjectCase | undefined =>
+  getCases(locale).items.find((item) => item.slug === slug);

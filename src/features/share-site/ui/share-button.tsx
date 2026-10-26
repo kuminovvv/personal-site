@@ -3,12 +3,15 @@
 import { useState } from "react";
 import { ArrowUpRight01StrokeRoundedIcon } from "@/shared/lib/icons";
 import { Button } from "@/shared/ui/button";
+import { localizeHref, type Locale } from "@/shared/lib/i18n/locale";
+import { getShareCopy } from "../model/copy";
 
-export const ShareButton = () => {
+export const ShareButton = ({ locale = "ru" }: { locale?: Locale }) => {
   const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
+  const copy = getShareCopy(locale);
 
   const share = async () => {
-    const url = `${window.location.origin}/`;
+    const url = `${window.location.origin}${localizeHref("/", locale)}`;
     if (navigator.share) {
       try {
         await navigator.share({ title: document.title, url });
@@ -36,10 +39,10 @@ export const ShareButton = () => {
       className="h-13.5 gap-2 rounded-full bg-site-green px-8 text-site-on-green hover:bg-site-green"
     >
       {status === "copied"
-        ? "Ссылка скопирована"
+        ? copy.copied
         : status === "error"
-          ? "Не удалось скопировать"
-          : "Поделиться сайтом"}
+          ? copy.error
+          : copy.idle}
       <ArrowUpRight01StrokeRoundedIcon aria-hidden="true" size={24} color="currentColor" className="size-6" />
     </Button>
   );

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ArrowUpRight01StrokeRoundedIcon } from "@/shared/lib/icons";
 import type { SiteContent } from "@/shared/lib/content/get-site-content";
+import type { Locale } from "@/shared/lib/i18n/locale";
+import { localizeHref } from "@/shared/lib/i18n/locale";
 
 type CompactCaseCardProps = {
   work: Pick<
@@ -8,9 +10,10 @@ type CompactCaseCardProps = {
     "slug" | "number" | "title" | "description" | "stack" | "href"
   > &
     Partial<Pick<SiteContent["catalog"]["omsuCases"][number], "label" | "mark">>;
+  locale?: Locale;
 };
 
-export const CompactCaseCard = ({ work }: CompactCaseCardProps) => (
+export const CompactCaseCard = ({ work, locale = "ru" }: CompactCaseCardProps) => (
   <article className="relative flex min-h-64.5 min-w-0 flex-col justify-between gap-5 rounded-site-32 bg-site-surface px-5.5 pt-5.5 pb-5 max-[680px]:min-h-62.5">
     <div className="flex items-start justify-between gap-3">
       <span className="text-[11px] leading-tight font-semibold text-site-green-text dark:text-site-green">
@@ -28,9 +31,9 @@ export const CompactCaseCard = ({ work }: CompactCaseCardProps) => (
       <span className="min-w-0 flex-1 text-[12px] leading-[1.3] text-site-subtle max-[450px]:basis-full">{work.stack}</span>
         <Link
           className="inline-flex min-h-12.25 shrink-0 items-center justify-center gap-2 rounded-full bg-site-green px-7 text-[14px] text-site-on-green whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-site-text max-[1180px]:px-5"
-          href={`/projects/${work.slug}`}
+          href={localizeHref(`/projects/${work.slug}`, locale)}
         >
-          Подробнее <ArrowUpRight01StrokeRoundedIcon aria-hidden="true" size={24} />
+          {locale === "en" ? "Details" : "Подробнее"} <ArrowUpRight01StrokeRoundedIcon aria-hidden="true" size={24} />
         </Link>
     </div>
   </article>

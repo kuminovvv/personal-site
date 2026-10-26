@@ -3,6 +3,8 @@
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant site-motion (&:where(html[data-site-motion="on"] *));
+@custom-variant site-still (&:where(html[data-site-motion="off"] *));
 @custom-variant projects (body:has([data-page="projects"]) &);
 @custom-variant stack (body:has([data-page="stack"]) &);
 
@@ -194,4 +196,49 @@
 html,
 body {
   background-color: var(--site-canvas);
+}
+
+/* The new editorial homepage has its own full-width Figma composition. */
+[data-site-layout]:has([data-visual-home]) {
+  background: #fff;
+  container-type: inline-size;
+}
+[data-site-layout]:has([data-visual-home]) > header,
+[data-site-layout]:has([data-visual-home]) > footer {
+  display: none;
+}
+[data-site-layout]:has([data-visual-home]) > main {
+  width: 100%;
+  max-width: none;
+  padding: 16px clamp(16px, 10.4167vw, 200px) 0;
+  overflow: visible;
+}
+[data-visual-home] {
+  --visual-heading-font-stack: var(--font-visual-display), sans-serif;
+  font-family: var(--font-visual-text), Arial, sans-serif;
+}
+[data-visual-home] :is(h1,h2,h3,h4) {
+  font-family: var(--visual-heading-font-stack);
+}
+html:has([data-visual-home]) {
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+}
+@media (prefers-reduced-motion: reduce) {
+  html:has([data-visual-home]) { scroll-behavior: auto; }
+}
+html[data-site-motion="on"]:has([data-visual-home]) { scroll-behavior: smooth; }
+html[data-site-motion="off"]:has([data-visual-home]) { scroll-behavior: auto; }
+
+/* Avoid painting Russian content while resolving a first-time visitor's country. */
+html[data-locale-pending="true"] body { visibility: hidden; }
+
+/* Keep the previous document painted until a same-origin navigation is ready.
+   Locale switches must not produce a second fade or a blank frame. */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
 }

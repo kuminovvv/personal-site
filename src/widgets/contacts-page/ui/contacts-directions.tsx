@@ -1,3 +1,5 @@
+import type { Locale } from "@/shared/lib/i18n/locale";
+
 const directions = [
   {
     number: "01",
@@ -16,16 +18,23 @@ const directions = [
   },
 ] as const;
 
-export const ContactsDirections = () => (
+export const ContactsDirections = ({ locale = "ru" }: { locale?: Locale }) => {
+  const en = locale === "en";
+  const items = en ? [
+    { number: "01", title: "Frontend development", description: "Complex interfaces, SPAs, React and TypeScript." },
+    { number: "02", title: "Architecture and quality", description: "Application structure, performance and product growth." },
+    { number: "03", title: "Collaboration", description: "Product ideas, engineering tasks and partnerships." },
+  ] : directions;
+  return (
   <section aria-labelledby="contacts-directions-title">
     <div className="mb-5">
-      <p className="text-[12px] font-semibold text-site-green-text dark:text-site-green">02 / НАПРАВЛЕНИЯ</p>
+      <p className="text-[12px] font-semibold text-site-green-text dark:text-site-green">{en ? "02 / DIRECTIONS" : "02 / НАПРАВЛЕНИЯ"}</p>
       <h2 id="contacts-directions-title" className="mt-2 font-heading text-[29px]! leading-[1.25]! font-semibold max-[680px]:text-[23px]!">
-        Что можем обсудить
+        {en ? "What we can discuss" : "Что можем обсудить"}
       </h2>
     </div>
     <div className="grid grid-cols-3 gap-5 max-[900px]:grid-cols-2 max-[680px]:grid-cols-1 max-[680px]:gap-3">
-      {directions.map((direction) => (
+      {items.map((direction) => (
         <article
           key={direction.number}
           className="min-w-0 rounded-[18px] bg-site-surface p-8 max-[680px]:p-6"
@@ -43,4 +52,5 @@ export const ContactsDirections = () => (
       ))}
     </div>
   </section>
-);
+  );
+};

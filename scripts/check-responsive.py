@@ -34,6 +34,10 @@ CHECK = """
     const parent = node.parentElement;
     const style = getComputedStyle(parent);
     if (style.display === "none" || style.visibility === "hidden") continue;
+    // The posters intentionally extend beyond the viewport inside a
+    // horizontally scrollable rail. Gallery geometry and clipping are
+    // covered separately by test:gallery.
+    if (parent.closest("[data-gallery-rail]")) continue;
 
     const range = document.createRange();
     range.selectNodeContents(node);

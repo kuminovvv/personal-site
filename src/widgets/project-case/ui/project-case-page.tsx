@@ -2,6 +2,9 @@ import Link from "next/link";
 import {ArrowUpRight01StrokeRoundedIcon} from "@/shared/lib/icons";
 import type {ProjectCase} from "@/shared/config/project-cases";
 import {cn} from "@/shared/lib/utils";
+import type { Locale } from "@/shared/lib/i18n/locale";
+import { localizeHref } from "@/shared/lib/i18n/locale";
+import { getProjectCaseCopy } from "../model/copy";
 
 const sectionClassName =
     "grid grid-cols-[minmax(0,0.72fr)_minmax(0,1fr)] gap-x-20 gap-y-8 rounded-site-32 bg-site-surface px-12 py-14 max-[1180px]:gap-x-12 max-[1100px]:px-10 max-[1100px]:py-12 max-[900px]:grid-cols-1 max-[900px]:gap-y-7 max-[900px]:p-9 max-[680px]:gap-y-5 max-[680px]:p-6";
@@ -9,7 +12,8 @@ const sectionClassName =
 const editorialSectionClassName =
     "grid grid-cols-[minmax(0,429px)_minmax(0,1fr)] gap-x-[72px] rounded-site-32 bg-site-surface p-8 max-[1100px]:gap-x-10 max-[900px]:grid-cols-1 max-[900px]:gap-y-6 max-[680px]:p-6";
 
-export const ProjectCasePage = ({project}: { project: ProjectCase }) => {
+export const ProjectCasePage = ({project, locale = "ru"}: { project: ProjectCase; locale?: Locale }) => {
+    const copy = getProjectCaseCopy(locale);
     const editorial = project.slug === "soobota";
     const panelClassName = editorial ? editorialSectionClassName : sectionClassName;
 
@@ -26,15 +30,15 @@ export const ProjectCasePage = ({project}: { project: ProjectCase }) => {
                     {project.title}{project.slug === "soobota" ? "." : ""}
                 </h1>
                 <p className={cn("max-w-212.5 font-heading text-[clamp(22px,2.25vw,29px)] leading-[1.35] font-bold tracking-[-0.04em]", editorial && "text-[28px] leading-[1.27] max-[680px]:text-[clamp(22px,5vw,28px)]")}>
-                    {editorial ? <>Когда родителям есть<span className="block">о чём поговорить.</span></> : project.tagline}
+                    {editorial ? <>{copy.editorialLead}<span className="block">{copy.editorialTail}</span></> : project.tagline}
                 </p>
                 <p className={cn("max-w-175 text-[18px] leading-[1.65] text-site-subtle max-[680px]:text-[16px]", editorial && "max-w-205 text-[17px] leading-[1.43] max-[680px]:text-[16px]")}>
                     {project.description}
                 </p>
             </div>
-            <aside className={cn("rounded-[24px] bg-site-surface px-9 py-8 max-[680px]:px-6 max-[680px]:py-6", editorial && "flex h-83.5 flex-col justify-between rounded-[18px] px-7 pt-6.5 pb-5 max-[900px]:h-auto max-[900px]:gap-4")} aria-label="Кратко о проекте">
+            <aside className={cn("rounded-[24px] bg-site-surface px-9 py-8 max-[680px]:px-6 max-[680px]:py-6", editorial && "flex h-83.5 flex-col justify-between rounded-[18px] px-7 pt-6.5 pb-5 max-[900px]:h-auto max-[900px]:gap-4")} aria-label={copy.overview}>
                 <h2 className="font-sans! text-[11px]! font-semibold! tracking-normal! text-site-green-text dark:text-site-green">
-                    КРАТКО О ПРОЕКТЕ
+                    {copy.overview}
                 </h2>
                 <dl className={cn("mt-5", editorial && "mt-0 flex h-64.5 flex-col justify-between max-[900px]:h-auto")}>
                     {project.facts.map(({label, value}) => (
@@ -53,7 +57,7 @@ export const ProjectCasePage = ({project}: { project: ProjectCase }) => {
                 aria-labelledby="case-problem-title">
                 <div>
                     <p className={cn("mb-7 text-[12px] font-semibold text-site-green-text dark:text-site-green max-[680px]:mb-4", editorial && "mb-4")}>01 /
-                        КОНТЕКСТ И ЗАДАЧА</p>
+                        {copy.context}</p>
                     <h2 id="case-problem-title"
                         className="max-w-110 font-heading text-[28px]! leading-[1.22]!">{project.problem.heading}</h2>
                 </div>
@@ -68,9 +72,9 @@ export const ProjectCasePage = ({project}: { project: ProjectCase }) => {
                 aria-labelledby="case-product-title">
                 <div>
                     <p className={cn("mb-7 text-[12px] font-semibold text-site-green-text dark:text-site-green max-[680px]:mb-4", editorial && "mb-4")}>02 /
-                        РЕАЛИЗАЦИЯ</p>
+                        {copy.implementation}</p>
                     <h2 id="case-product-title" className="font-heading text-[29px]! leading-[1.2]!">
-                        {project.slug === "eservice-redesign" ? "Дизайн-решение" : "Ключевые решения"}
+                        {project.slug === "eservice-redesign" ? copy.designSolution : copy.keySolutions}
                     </h2>
                     <p className={cn("mt-6 max-w-90 text-[16px] leading-[1.6] text-site-subtle max-[680px]:mt-4", editorial && "mt-4 max-w-110 text-[16px] leading-[1.4]")}>{project.capabilitiesNote}</p>
                 </div>
@@ -95,8 +99,8 @@ export const ProjectCasePage = ({project}: { project: ProjectCase }) => {
                 aria-labelledby="case-role-title">
                 <div>
                     <p className={cn("mb-7 text-[12px] font-semibold text-site-green-text dark:text-site-green max-[680px]:mb-4", editorial && "mb-4")}>03 /
-                        МОЙ ВКЛАД</p>
-                    <h2 id="case-role-title" className="font-heading text-[29px]! max-[430px]:text-[23px]!">Зона ответственности</h2>
+                        {copy.contribution}</p>
+                    <h2 id="case-role-title" className="font-heading text-[29px]! max-[430px]:text-[23px]!">{copy.responsibility}</h2>
                 </div>
                 <div>
                     <h3 className={cn("text-[22px] leading-[1.4] font-semibold max-[680px]:text-[20px]", editorial && "text-[21px] leading-[1.3]")}>{project.role.lead}</h3>
@@ -113,8 +117,8 @@ export const ProjectCasePage = ({project}: { project: ProjectCase }) => {
                 className={panelClassName}
                 aria-labelledby="case-tech-title">
                 <div>
-                    <p className={cn("mb-7 text-[12px] font-semibold text-site-green-text max-[680px]:mb-4", editorial && "mb-4")}>04 / ТЕХНОЛОГИИ</p>
-                    <h2 id="case-tech-title" className="font-heading text-[29px]!">Под капотом</h2>
+                    <p className={cn("mb-7 text-[12px] font-semibold text-site-green-text max-[680px]:mb-4", editorial && "mb-4")}>04 / {copy.technology}</p>
+                    <h2 id="case-tech-title" className="font-heading text-[29px]!">{copy.underTheHood}</h2>
                 </div>
                 <ul className={cn("flex flex-wrap content-start gap-3.5 max-[680px]:gap-2.75", editorial && "gap-2.75")}>
                     {project.technologies.map((technology) => (
@@ -129,16 +133,16 @@ export const ProjectCasePage = ({project}: { project: ProjectCase }) => {
             <p className={cn("mx-auto max-w-230 font-heading text-[clamp(18px,2vw,23px)] leading-[1.5] font-bold", editorial && "max-w-none text-[23px] leading-[1.18] max-[680px]:text-[18px]")}>{project.closing}</p>
         </div>
 
-        <nav className={cn("mt-8 flex flex-wrap items-center justify-between gap-3 max-[680px]:mt-6", editorial && "mt-5")} aria-label="Действия с проектом">
+        <nav className={cn("mt-8 flex flex-wrap items-center justify-between gap-3 max-[680px]:mt-6", editorial && "mt-5")} aria-label={copy.actions}>
             <Link
                 className="inline-flex min-h-12 items-center rounded-full bg-site-surface px-6 text-[14px] font-medium text-site-text"
-                href="/projects">
-                Все проекты
+                href={localizeHref("/projects", locale)}>
+                {copy.allProjects}
             </Link>
             {project.externalUrl && (
                 <a className="inline-flex min-h-12 items-center gap-2 rounded-full bg-site-green px-6 text-[14px] font-medium text-site-on-green"
                    href={project.externalUrl} target="_blank" rel="noopener noreferrer">
-                    {project.externalLabel ?? "Открыть проект"}
+                    {project.externalLabel ?? copy.openProject}
                     <ArrowUpRight01StrokeRoundedIcon aria-hidden="true" size={22}/>
                 </a>
             )}

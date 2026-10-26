@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { isMotionReduced } from "@/shared/lib/motion/preference";
 
 const getHashTarget = (hash: string) => {
   if (!hash || hash === "#") return null;
@@ -19,7 +20,7 @@ export const SmoothScrollProvider = ({
 
   useEffect(() => {
     const scrollToTarget = (target: HTMLElement) => {
-      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const reducedMotion = isMotionReduced();
       target.scrollIntoView({ behavior: reducedMotion ? "instant" : "smooth", block: "start" });
     };
 
@@ -54,6 +55,7 @@ export const SmoothScrollProvider = ({
       event.preventDefault();
       if (window.location.hash !== destination.hash) {
         window.history.pushState(null, "", destination.hash);
+        window.dispatchEvent(new Event("portfolio:location-change"));
       }
 
       scrollToTarget(target);

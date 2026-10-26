@@ -1,13 +1,17 @@
 import { StackTechnologyTag } from "./stack-technology-tag";
 import { cn } from "@/shared/lib/utils";
 import type { stackContent } from "../model/stack-content";
+import type { Locale } from "@/shared/lib/i18n/locale";
+import { getStackUiCopy } from "../model/ui-copy";
 
 type Props = {
   item: (typeof stackContent.primary)[number];
+  locale?: Locale;
 };
 
-export const StackPrimaryCard = ({ item }: Props) => {
+export const StackPrimaryCard = ({ item, locale = "ru" }: Props) => {
   const backend = item.kind === "backend";
+  const copy = getStackUiCopy(locale);
 
   return (
     <article className={cn(
@@ -22,9 +26,9 @@ export const StackPrimaryCard = ({ item }: Props) => {
       <p className={cn("mt-3 text-[15px] leading-[1.45]", backend ? "text-[#b5bbb7]" : "text-site-subtle")}>{item.description}</p>
 
       {backend ? (
-        <div className="mt-3 flex h-31.5 items-center gap-3.5 rounded-[12px] bg-[#f2f2f2] p-3.75 max-[400px]:gap-2 max-[400px]:p-2.5" aria-label="Архитектура: клиент, API и база данных">
+        <div className="mt-3 flex h-31.5 items-center gap-3.5 rounded-[12px] bg-[#f2f2f2] p-3.75 max-[400px]:gap-2 max-[400px]:p-2.5" aria-label={copy.architecture}>
           {[
-            ["UI", "Клиент"],
+            ["UI", copy.client],
             ["API", "Go"],
             ["DB", "Postgres"],
           ].map(([label, description]) => (
@@ -35,7 +39,7 @@ export const StackPrimaryCard = ({ item }: Props) => {
           ))}
         </div>
       ) : (
-        <div className="mt-3 flex h-31.5 gap-3.5 rounded-[12px] bg-site-soft p-3.75 max-[400px]:gap-2 max-[400px]:p-2.5" aria-label="Схема интерфейса: навигация, компоненты и состояние">
+        <div className="mt-3 flex h-31.5 gap-3.5 rounded-[12px] bg-site-soft p-3.75 max-[400px]:gap-2 max-[400px]:p-2.5" aria-label={copy.diagram}>
           <div className="flex w-[23%] shrink-0 flex-col gap-3 rounded-[9px] bg-white px-3 py-3 max-[400px]:px-2" aria-hidden="true">
             {[0, 1, 2, 3].map((i) => (
               <span className={cn("h-1.5 rounded-full bg-[#dce5df]", i === 1 && "bg-[#18c14f]", i % 2 === 0 ? "w-3/4" : "w-full")} key={i} />
@@ -44,7 +48,7 @@ export const StackPrimaryCard = ({ item }: Props) => {
           <div className="min-w-0 flex-1 rounded-[9px] bg-white p-3 max-[400px]:p-2">
             <div className="flex items-center gap-2 text-[12px] font-semibold text-[#333]">
               <span className="size-2.25 shrink-0 rounded-full bg-[#18c14f]" aria-hidden="true" />
-              <span>Компоненты и состояние</span>
+              <span>{copy.components}</span>
             </div>
             <div className="mt-3 grid grid-cols-3 gap-2">
               {[0, 1, 2].map((i) => (

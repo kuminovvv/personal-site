@@ -1,14 +1,17 @@
 import Link from "next/link";
 import { LinkButton } from "@/shared/ui/link-button";
-import { siteFooterNavigation } from "@/shared/config/site-navigation";
+import { getSiteFooterNavigation } from "@/shared/config/site-navigation";
 import type { SiteContent } from "@/shared/lib/content/get-site-content";
+import type { Locale } from "@/shared/lib/i18n/locale";
+import { LanguageSwitcher } from "@/shared/ui/language-switcher";
 
 type SiteFooterProps = {
   content: SiteContent["footer"];
   channels: SiteContent["home"]["contacts"]["channels"];
+  locale?: Locale;
 };
 
-export const SiteFooter = ({ content, channels }: SiteFooterProps) => {
+export const SiteFooter = ({ content, channels, locale = "ru" }: SiteFooterProps) => {
   const email = channels.find((channel) => channel.kind === "EMAIL");
   const telegram = channels.find((channel) => channel.kind === "TELEGRAM");
   return (
@@ -28,8 +31,8 @@ export const SiteFooter = ({ content, channels }: SiteFooterProps) => {
         <div>
           <h2 className="mb-7 font-sans! text-[12px]! font-semibold! tracking-normal! text-site-green">{content.navigationTitle}</h2>
           <div className="grid max-w-92.5 grid-cols-2 gap-x-5.5 gap-y-4.5">
-            {siteFooterNavigation.map((item) => (
-              <Link className="text-[16px] text-white hover:text-site-green" href={"footerHref" in item ? item.footerHref : item.href} key={item.href}>
+            {getSiteFooterNavigation(locale).map((item) => (
+              <Link className="text-[16px] text-white hover:text-site-green" href={item.footerHref} key={item.href}>
                 {item.footerLabel}
               </Link>
             ))}
@@ -53,7 +56,7 @@ export const SiteFooter = ({ content, channels }: SiteFooterProps) => {
       </div>
       <div className="grid grid-cols-[1fr_1.8fr_auto] items-center border-t border-[#4b504d] pt-7 text-[13px] text-[#b5bbb7] max-[580px]:grid-cols-[1fr_auto] max-[580px]:gap-4">
         <span>{content.copyright}</span>
-        <span className="max-[580px]:hidden">{content.note}</span>
+        <div className="flex flex-wrap items-center gap-4"><span className="max-[580px]:hidden">{content.note}</span><LanguageSwitcher locale={locale} /></div>
         <LinkButton href="#top" tone="soft" size="footer" arrow="up-right" className="bg-[#161a1d] text-white hover:bg-[#161a1d]">{content.topLabel}</LinkButton>
       </div>
     </footer>

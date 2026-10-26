@@ -1,14 +1,20 @@
 import type { SiteContent } from "@/shared/lib/content/get-site-content";
 import { resumeCareer } from "../model/resume-content";
+import { getResumeContent } from "../model/resume-content";
+import type { Locale } from "@/shared/lib/i18n/locale";
+import { getResumeUiCopy } from "../model/ui-copy";
 
 type ResumeCareerCardProps = {
   job: SiteContent["home"]["experience"]["jobs"][number];
+  locale?: Locale;
 };
 
 export const ResumeCareerCard = (props: ResumeCareerCardProps) => {
-  const { job } = props;
+  const { job, locale = "ru" } = props;
+  const career = locale === "en" ? getResumeContent(locale).career : resumeCareer;
+  const copy = getResumeUiCopy(locale);
   const university = job.university;
-  const content = university ? resumeCareer.omsu : resumeCareer.gazprom;
+  const content = university ? career.omsu : career.gazprom;
 
   return (
     <article className="grid grid-cols-[minmax(235px,330px)_minmax(0,1fr)] gap-x-8 gap-y-7 rounded-[23px] bg-site-surface p-7 max-[900px]:grid-cols-1 max-[680px]:gap-6 max-[680px]:p-5">
@@ -22,8 +28,8 @@ export const ResumeCareerCard = (props: ResumeCareerCardProps) => {
       <div className="min-w-0">
         <p className="text-[17px] leading-[1.5] font-semibold max-[680px]:text-[15px]">{content.lead}</p>
         {university ? (
-          <ol className="mt-5 grid gap-3.5" aria-label="Задачи и проекты в ОмГУ">
-            {resumeCareer.omsu.achievements.map((achievement, index) => (
+          <ol className="mt-5 grid gap-3.5" aria-label={copy.omSu}>
+            {career.omsu.achievements.map((achievement, index) => (
               <li className="flex items-start gap-3 text-[14px] leading-[1.5] text-site-subtle" key={achievement}>
                 <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-site-sage text-[11px] font-semibold text-site-green-text dark:text-site-green">
                   {index + 1}
@@ -33,8 +39,8 @@ export const ResumeCareerCard = (props: ResumeCareerCardProps) => {
             ))}
           </ol>
         ) : (
-          <ol className="mt-6 grid grid-cols-2 gap-4 max-[680px]:grid-cols-1" aria-label="Направления работы в Газпром ВНИИГАЗ">
-            {resumeCareer.gazprom.achievements.map((achievement, index) => (
+          <ol className="mt-6 grid grid-cols-2 gap-4 max-[680px]:grid-cols-1" aria-label={copy.gazprom}>
+            {career.gazprom.achievements.map((achievement, index) => (
               <li className="rounded-[16px] bg-site-soft p-4" key={achievement.title}>
                 <div className="flex items-baseline gap-3">
                   <span className="text-[11px] font-semibold text-site-green-text dark:text-site-green">{String(index + 1).padStart(2, "0")}</span>
@@ -45,7 +51,7 @@ export const ResumeCareerCard = (props: ResumeCareerCardProps) => {
             ))}
           </ol>
         )}
-        <ul className="mt-6 flex flex-wrap gap-2" aria-label="Технологии">
+        <ul className="mt-6 flex flex-wrap gap-2" aria-label={copy.technologies}>
           {content.technologies.map((technology) => (
             <li className="rounded-full bg-site-soft px-3.5 py-2 text-[12px] font-medium" key={technology}>{technology}</li>
           ))}

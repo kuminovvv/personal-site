@@ -1,0 +1,528 @@
+{
+  "home": {
+    "hero": {
+      "identity": "KUMINOVVV  /  PERSONAL BRAND",
+      "greeting": "Hi, I'm Ilya.",
+      "titleLine": "I connect ideas",
+      "titleAccent": "and technology.",
+      "description": "Frontend developer with 6+ years of commercial experience. I build complex interfaces, understand architecture, and turn technical challenges into clear solutions.",
+      "primaryAction": {
+        "label": "View my work",
+        "href": "/en/projects"
+      },
+      "secondaryAction": {
+        "label": "My resume",
+        "href": "/en/resume"
+      },
+      "stats": [
+        {
+          "value": "6+ years",
+          "label": "commercial experience"
+        },
+        {
+          "value": "React / TS",
+          "label": "core stack"
+        },
+        {
+          "value": "Architecture",
+          "label": "and complex interfaces"
+        }
+      ],
+      "portraitSrc": "/design/home/hero-portrait.webp",
+      "portraitAlt": "Ilya wearing headphones against a green background",
+      "brand": "KUMINOVVV",
+      "brandDescription": "Ideas. Interfaces. People.",
+      "brandCategory": "PERSONAL / IDENTITY",
+      "brandSince": "in IT since 2020",
+      "separatorText": "Explore the work and experience — every section is grounded in real tasks and decisions."
+    },
+    "approach": {
+      "title": "Code. Structure. Results.",
+      "description": "Three things that matter to me in my work.",
+      "items": [
+        {
+          "eyebrow": "01 / INTERFACES",
+          "title": "Clear UI",
+          "description": "Complex logic, simple actions.",
+          "image": "approach-ui.webp"
+        },
+        {
+          "eyebrow": "02 / ARCHITECTURE",
+          "title": "Clean structure",
+          "description": "Code that is easy to work with.",
+          "image": "approach-architecture.webp"
+        },
+        {
+          "eyebrow": "03 / RESULT",
+          "title": "Solving the task",
+          "description": "I build what is truly needed.",
+          "image": "approach-result.webp"
+        }
+      ],
+      "banner": {
+        "title": "Real tasks behind the words.",
+        "description": "Details are in my experience and projects.",
+        "href": "/en/resume",
+        "label": "View experience"
+      }
+    },
+    "experience": {
+      "title": "I work with real-world tasks.",
+      "description": "Two teams. Different products. One focus: useful interfaces.",
+      "asideLabel": "MY DEVELOPMENT JOURNEY",
+      "asideStart": "2020",
+      "asideEnd": "Now",
+      "jobs": [
+        {
+          "period": "11.2024 — now",
+          "status": "CURRENT ROLE",
+          "name": "Gazprom VNIIGAZ",
+          "role": "Lead specialist · Frontend / React",
+          "description": "Enterprise SPAs, data editors, and client-side data logic.",
+          "tags": [
+            "React",
+            "TypeScript",
+            "FSD",
+            "Canvas API",
+            "RTK"
+          ],
+          "university": false,
+          "action": "Open",
+          "href": "/en/projects/gazprom-interfaces"
+        },
+        {
+          "period": "09.2020 — 09.2024",
+          "status": "PREVIOUS EXPERIENCE",
+          "name": "Omsk State University named after F. M. Dostoevsky",
+          "role": "Frontend developer",
+          "description": "eService frontend modules, REST API integrations, and state management with MobX.",
+          "tags": [
+            "React",
+            "TypeScript",
+            "SPA",
+            "REST API"
+          ],
+          "university": true,
+          "action": "Open",
+          "href": "/en/projects/#omsu"
+        }
+      ],
+      "banner": {
+        "title": "From interfaces to engineering solutions.",
+        "description": "Details, projects, and tasks are in my resume.",
+        "href": "/en/resume",
+        "label": "Read resume"
+      }
+    },
+    "projects": {
+      "title": "From idea to a working system.",
+      "description": "I design product flows, build client and server logic, and work with architecture and data.",
+      "asideLabel": "IN THIS SECTION",
+      "asideText": "3 of 7",
+      "items": [
+        {
+          "number": "01 / SOCIAL NETWORK",
+          "name": "Soobota",
+          "slug": "soobota",
+          "copy": "Social platform with posts, communities, and asynchronous moderation.",
+          "role": "Product concept, UX/UI, Next.js frontend, and Go backend.",
+          "tags": [
+            "Next.js",
+            "TypeScript",
+            "Go",
+            "Redis"
+          ],
+          "preview": "social"
+        },
+        {
+          "number": "02 / PROPERTY SEARCH",
+          "name": "SPB Rent",
+          "slug": "spb-rent",
+          "copy": "Telegram listing aggregator with filters and map search.",
+          "role": "Data processing and classification, server API, catalog, and map.",
+          "tags": [
+            "Next.js",
+            "Go",
+            "Leaflet",
+            "PostgreSQL"
+          ],
+          "preview": "rent"
+        },
+        {
+          "number": "03 / TECHNICAL CASE",
+          "name": "Image annotation",
+          "slug": "image-annotation",
+          "copy": "Interactive tool for selecting and annotating image regions.",
+          "role": "Coordinate, scaling, and Canvas API interaction logic.",
+          "tags": [
+            "React",
+            "TypeScript",
+            "Canvas API"
+          ],
+          "preview": "canvas"
+        }
+      ],
+      "banner": {
+        "title": "Want to learn more about my work?",
+        "description": "I can tell you about the decisions and technical details.",
+        "href": "/en/contacts",
+        "label": "Get in touch"
+      }
+    },
+    "stack": {
+      "title": "My working toolkit.",
+      "description": "The tools I use to solve tasks every day.",
+      "asideLabel": "CORE SPECIALIZATION",
+      "asideText": "Frontend",
+      "primary": {
+        "eyebrow": "01 / CORE STACK",
+        "title": "React + TypeScript",
+        "description": "I build interfaces and complex client-side logic.",
+        "tags": [
+          "React",
+          "TypeScript",
+          "Next.js"
+        ],
+        "status": "IN USE",
+        "caption": "Commercial projects and personal products"
+      },
+      "cards": [
+        {
+          "id": "interfaces",
+          "label": "INTERFACES",
+          "title": "UI and data",
+          "tags": [
+            "AG Grid",
+            "Canvas API",
+            "Sass"
+          ]
+        },
+        {
+          "id": "architecture",
+          "label": "CODE ORGANIZATION",
+          "title": "Architecture",
+          "tags": [
+            "FSD",
+            "Redux Toolkit",
+            "REST API"
+          ]
+        },
+        {
+          "id": "quality",
+          "label": "TESTING AND RELEASES",
+          "title": "Quality",
+          "tags": [
+            "Playwright",
+            "Git",
+            "GitLab CI/CD"
+          ]
+        },
+        {
+          "id": "backend",
+          "label": "INTEGRATIONS",
+          "title": "Backend",
+          "tags": [
+            "Go",
+            "PostgreSQL",
+            "Redis"
+          ]
+        }
+      ],
+      "banner": {
+        "title": "Tools change. The approach stays.",
+        "description": "The goal is to solve each task clearly and reliably.",
+        "href": "/en/resume",
+        "label": "My resume"
+      }
+    },
+    "contacts": {
+      "title": "Let's connect.",
+      "description": "Work, projects, or simply getting acquainted — write directly.",
+      "brandName": "KUMINOVVV",
+      "brandSubtitle": "Personal website",
+      "availability": "●  AVAILABLE / KUMINOVVV",
+      "callTitleLine": "Have a task?",
+      "callTitleAccent": "Let's discuss.",
+      "callDescription": "I'm looking for interesting work where my experience and attention to detail can help.",
+      "interests": [
+        "JOIN A TEAM",
+        "PROJECTS",
+        "SAY HELLO"
+      ],
+      "closingLine": "I work with code.",
+      "closingAccent": "I think about people.",
+      "closingDescription": "Interfaces, experience, and decisions.",
+      "callNote": "●  You can simply write a few lines.",
+      "channels": [
+        {
+          "kind": "EMAIL",
+          "number": "01",
+          "title": "kuminovvv@mail.ru",
+          "href": "mailto:kuminovvv@mail.ru",
+          "description": "For proposals and detailed questions.",
+          "action": "Write an email",
+          "external": false
+        },
+        {
+          "kind": "TELEGRAM",
+          "number": "02",
+          "title": "@kuminovvv",
+          "href": "https://t.me/kuminovvv",
+          "description": "If you would rather discuss it in chat.",
+          "action": "Open Telegram",
+          "external": true
+        }
+      ],
+      "brandStatement": "Kuminovvv is my personal brand.",
+      "brandExplanation": "Portfolio, experience, and a way to get in touch.",
+      "shareTitle": "Know someone who could use my experience?",
+      "shareDescription": "Just send them a link to my website."
+    }
+  },
+  "stackPage": {
+    "intro": {
+      "eyebrow": "TOOLS / REAL TASKS",
+      "title": "The stack I use to build products.",
+      "description": "From user interfaces to APIs, data, and shipping changes.",
+      "focusLabel": "MY SPECIALIZATION",
+      "focus": "Frontend",
+      "focusDescription": "And complex client-side logic"
+    },
+    "primary": [
+      {
+        "kind": "frontend",
+        "eyebrow": "01 / FOUNDATION",
+        "category": "FRONTEND",
+        "title": "React + TypeScript",
+        "description": "Components, interfaces, styles, and API integrations.",
+        "technologies": [
+          "React",
+          "TypeScript",
+          "Next.js",
+          "Tailwind CSS",
+          "shadcn/ui"
+        ]
+      },
+      {
+        "kind": "backend",
+        "eyebrow": "02 / SERVER AND DATA",
+        "category": "BACKEND",
+        "title": "Go + PostgreSQL",
+        "description": "APIs, data storage, and server logic for personal products.",
+        "technologies": [
+          "Go",
+          "PostgreSQL",
+          "Redis",
+          "RabbitMQ",
+          "Docker"
+        ]
+      }
+    ],
+    "capabilities": [
+      {
+        "category": "03 / COMPLEX INTERFACES",
+        "title": "UI and data",
+        "description": "Editable tables, graphics, and visual tools.",
+        "technologies": [
+          "AG Grid",
+          "Canvas API",
+          "Sass"
+        ]
+      },
+      {
+        "category": "04 / CLIENT-SIDE LOGIC",
+        "title": "FSD and architecture",
+        "description": "Feature-Sliced Design, state management, and API integrations.",
+        "technologies": [
+          "FSD",
+          "Redux Toolkit",
+          "REST API"
+        ]
+      },
+      {
+        "category": "05 / TESTING AND DELIVERY",
+        "title": "Quality and releases",
+        "description": "Tests, version control, and automated delivery.",
+        "technologies": [
+          "Playwright",
+          "Git",
+          "GitLab CI/CD"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "category": "IN PRACTICE / 01",
+        "title": "Gazprom VNIIGAZ",
+        "description": "Working with data and complex tables",
+        "technologies": "React · TypeScript · AG Grid",
+        "href": "/en/projects/gazprom-interfaces"
+      },
+      {
+        "category": "IN PRACTICE / 02",
+        "title": "Soobota",
+        "description": "Social network for parents",
+        "technologies": "Next.js · Go · PostgreSQL",
+        "href": "/en/projects/soobota"
+      },
+      {
+        "category": "IN PRACTICE / 03",
+        "title": "Image annotation",
+        "description": "Visual annotation with Canvas",
+        "technologies": "React · TypeScript · Canvas API",
+        "href": "/en/projects/image-annotation"
+      }
+    ],
+    "banner": {
+      "title": "Technology matters in the context of the task.",
+      "description": "The projects show what I built and why.",
+      "label": "View projects",
+      "href": "/en/projects"
+    }
+  },
+  "pages": {
+    "resume": {
+      "title": "Experience and practice.",
+      "description": "Commercial interface development, teamwork, architecture, and complex products.",
+      "detail": "EXPERIENCE / TEAMS / SKILLS",
+      "number": "2020",
+      "numberLabel": "started working in IT",
+      "nextHref": "/en/contacts",
+      "nextLabel": "Get in touch"
+    },
+    "contacts": {
+      "title": "Always reachable.",
+      "description": "For collaboration, work opportunities, or simply to say hello — write directly.",
+      "detail": "EMAIL / TELEGRAM",
+      "number": "02",
+      "numberLabel": "ways to get in touch",
+      "nextHref": "/en/projects",
+      "nextLabel": "View projects"
+    }
+  },
+  "catalog": {
+    "intro": {
+      "eyebrow": "MY WORK / CASES",
+      "title": "Projects by focus.",
+      "description": "Commercial development, personal products, and technical solutions.",
+      "counterLabel": "PORTFOLIO",
+      "counterValue": "7 cases",
+      "counterNote": "3 shipped + concept · 2 personal · 1 technical"
+    },
+    "commercialHeading": {
+      "title": "Commercial projects",
+      "meta": "01–04 / WORK EXPERIENCE"
+    },
+    "personalHeading": {
+      "title": "Personal projects",
+      "meta": "05–06 / PERSONAL PRODUCTS"
+    },
+    "technicalHeading": {
+      "title": "Technical cases",
+      "meta": "07 / TOOLS"
+    },
+    "university": {
+      "title": "Omsk State University named after F. M. Dostoevsky",
+      "description": "Electronic services portal · eservice.omsu.ru",
+      "count": "3 projects"
+    },
+    "company": {
+      "title": "Gazprom VNIIGAZ",
+      "description": "Enterprise development · interfaces and data tools",
+      "count": "1 project"
+    },
+    "omsuCases": [
+      {
+        "slug": "omsu-portfolio",
+        "number": "01",
+        "label": "SHIPPED",
+        "mark": "01",
+        "title": "My portfolio",
+        "description": "eService frontend module: user flows, MobX state, and REST API.",
+        "stack": "React · TypeScript · MobX · REST API",
+        "href": "https://eservice.omsu.ru/portfolio/"
+      },
+      {
+        "slug": "omsu-schedule",
+        "number": "02",
+        "label": "SHIPPED",
+        "mark": "02",
+        "title": "Class schedule",
+        "description": "Standalone service: schedule logic, MobX, and API integration.",
+        "stack": "React · TypeScript · MobX · REST API",
+        "href": "https://eservice.omsu.ru/schedule/"
+      },
+      {
+        "slug": "eservice-redesign",
+        "number": "03",
+        "label": "NOT SHIPPED",
+        "mark": "UI",
+        "title": "eService redesign",
+        "description": "UX/UI concept for the portal home page: structure, composition, and visual hierarchy.",
+        "stack": "UX/UI · Design concept · MobX",
+        "href": ""
+      }
+    ],
+    "gazpromCase": {
+      "slug": "gazprom-interfaces",
+      "number": "04 / GAZPROM VNIIGAZ · FRONTEND",
+      "title": "Enterprise interfaces",
+      "description": "Enterprise SPAs, data editors, and applied data logic.",
+      "stack": "React · TypeScript · Redux Toolkit (RTK) · AG Grid",
+      "brand": "G.",
+      "preview": "gazprom",
+      "action": "",
+      "href": ""
+    },
+    "personalCases": [
+      {
+        "slug": "soobota",
+        "number": "05 / PERSONAL PRODUCT",
+        "title": "Soobota",
+        "description": "Full-stack social platform with posts, communities, authentication, and asynchronous moderation.",
+        "stack": "Next.js · TypeScript · Go · PostgreSQL",
+        "brand": "S.",
+        "preview": "soobota",
+        "action": "Open case",
+        "href": "https://soobota.com/"
+      },
+      {
+        "slug": "spb-rent",
+        "number": "06 / PERSONAL PRODUCT",
+        "title": "SPB Rent",
+        "description": "Telegram listing aggregator: data collection, classification, filters, and an interactive map.",
+        "stack": "Next.js · Go · Leaflet · PostgreSQL",
+        "brand": "SPB",
+        "preview": "rent",
+        "action": "",
+        "href": "https://github.com/kuminovvv/rent-hub"
+      }
+    ],
+    "technicalCases": [
+      {
+        "slug": "image-annotation",
+        "number": "07 / TECHNICAL CASE",
+        "title": "Image annotation",
+        "description": "Image region selection tool: Canvas API, coordinates, and scaling.",
+        "stack": "React · TypeScript · Canvas API",
+        "href": ""
+      }
+    ],
+    "closing": {
+      "title": "Work experience and personal products.",
+      "description": "Here are the tasks, my contribution, and each project's technologies.",
+      "signature": "KUMINOVVV"
+    }
+  },
+  "footer": {
+    "brand": "KUMINOVVV",
+    "subtitle": "Personal website and portfolio",
+    "description": "Interfaces, engineering solutions, and ideas in progress.",
+    "tag": "SKILLS + IDEAS",
+    "navigationTitle": "NAVIGATION",
+    "contactTitle": "GET IN TOUCH",
+    "copyright": "© 2026 Kuminovvv",
+    "note": "Made with attention to detail.",
+    "topLabel": "Back to top"
+  }
+}

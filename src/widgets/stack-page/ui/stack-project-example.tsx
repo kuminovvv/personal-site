@@ -1,11 +1,13 @@
 import Link from "next/link";
 import type { stackContent } from "../model/stack-content";
+import { localizeHref, type Locale } from "@/shared/lib/i18n/locale";
 
 type Props = {
   item: (typeof stackContent.examples)[number];
+  locale?: Locale;
 };
 
-export const StackProjectExample = ({ item }: Props) => {
+export const StackProjectExample = ({ item, locale = "ru" }: Props) => {
   const content = (
     <>
       <p className="text-[10px] leading-none font-semibold text-site-green-text dark:text-site-green">{item.category}</p>
@@ -18,7 +20,7 @@ export const StackProjectExample = ({ item }: Props) => {
   const classes = "block min-h-37.75 min-w-0 rounded-[17px] bg-site-surface px-5.25 py-5 text-site-text max-[680px]:min-h-0";
 
   return item.href ? (
-    <Link href={item.href} className={classes} aria-label={`Подробнее: ${item.title}`}>
+    <Link href={localizeHref(item.href, locale)} className={classes} aria-label={`${locale === "en" ? "Details" : "Подробнее"}: ${item.title}`}>
       {content}
     </Link>
   ) : (

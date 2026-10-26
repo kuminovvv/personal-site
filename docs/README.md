@@ -26,6 +26,8 @@
 | [08-error-handling.md](08-error-handling.md) | Обработка ошибок и обратная связь |
 | [09-testing-and-verification.md](09-testing-and-verification.md) | Проверка изменений; использовать реальные скрипты `pnpm` проекта |
 | [11-ui-context-risks.md](11-ui-context-risks.md) | UI-состояния, overlays, hover, риски регрессий |
+| [12-motion.md](12-motion.md) | Анимации главной страницы, motion-токены, доступность и браузерные проверки |
+| [13-localization.md](13-localization.md) | RU/EN, i18next, статические маршруты, словари и переключение языка |
 
 ## Быстрый выбор по задаче
 

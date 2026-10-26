@@ -3,9 +3,10 @@ import {CatalogIntro} from "./catalog-intro";
 import {CatalogSectionHeading} from "./catalog-section-heading";
 import {CompanyHeading} from "./company-heading";
 import {CompactCaseCard} from "./compact-case-card";
+import type { Locale } from "@/shared/lib/i18n/locale";
 
-export const ProjectsCatalog = ({ content }: { content: SiteContent["catalog"] }) => (
-    <section className="pt-6.5 max-[680px]:pt-7" aria-label="Каталог проектов" data-page="projects">
+export const ProjectsCatalog = ({ content, locale = "ru" }: { content: SiteContent["catalog"]; locale?: Locale }) => (
+    <section className="pt-6.5 max-[680px]:pt-7" aria-label={locale === "en" ? "Project catalog" : "Каталог проектов"} data-page="projects">
         <CatalogIntro content={content.intro}/>
         <div className="mt-6.5 flex flex-col gap-12">
             <CatalogSectionHeading {...content.commercialHeading}/>
@@ -14,7 +15,7 @@ export const ProjectsCatalog = ({ content }: { content: SiteContent["catalog"] }
                     {...content.university}
                 />
                 <div className="mt-4 grid grid-cols-3 gap-4 max-[900px]:grid-cols-2 max-[680px]:grid-cols-1">
-                    {content.omsuCases.map((work) => <CompactCaseCard key={work.slug} work={work}/>)}
+                    {content.omsuCases.map((work) => <CompactCaseCard key={work.slug} work={work} locale={locale}/>)}
                 </div>
             </div>
 
@@ -23,17 +24,17 @@ export const ProjectsCatalog = ({ content }: { content: SiteContent["catalog"] }
                     {...content.company}
                 />
                 <div className="mt-4 grid grid-cols-3 gap-4 max-[900px]:grid-cols-2 max-[680px]:grid-cols-1">
-                    <CompactCaseCard work={content.gazpromCase}/>
+                    <CompactCaseCard work={content.gazpromCase} locale={locale}/>
                 </div>
             </div>
 
             <CatalogSectionHeading {...content.personalHeading} className="mt-8"/>
             <div className="grid grid-cols-3 gap-4 max-[900px]:grid-cols-2 max-[680px]:grid-cols-1">
-                {content.personalCases.map((work) => <CompactCaseCard work={work} key={work.slug}/>)}
+                {content.personalCases.map((work) => <CompactCaseCard work={work} locale={locale} key={work.slug}/>)}
             </div>
             <CatalogSectionHeading {...content.technicalHeading} className="mt-8"/>
             <div className="grid grid-cols-3 gap-4 max-[900px]:grid-cols-2 max-[680px]:grid-cols-1">
-                {content.technicalCases.map((work) => <CompactCaseCard work={work} key={work.slug}/>)}
+                {content.technicalCases.map((work) => <CompactCaseCard work={work} locale={locale} key={work.slug}/>)}
             </div>
         </div>
         <div

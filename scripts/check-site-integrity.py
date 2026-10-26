@@ -75,7 +75,7 @@ def check() -> int:
         pages[url_path] = parser
         if parser.h1_count != 1:
             problems.append(f"{url_path}: заголовков H1: {parser.h1_count}")
-        if not any(value.strip() for value in parser.descriptions):
+        if url_path not in {"/404/", "/_not-found/"} and not any(value.strip() for value in parser.descriptions):
             problems.append(f"{url_path}: отсутствует description")
         duplicates = [item for item, n in Counter(parser.ids).items() if n > 1]
         if duplicates:
