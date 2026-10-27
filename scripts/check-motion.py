@@ -40,9 +40,9 @@ def desktop(page, url):
     """)
     page.goto(url, wait_until="networkidle")
     page.wait_for_timeout(1200)
-    intro = page.evaluate("motionCalls.filter(call => call.intro)")
-    assert [call["intro"] for call in intro] == ["nav", "line", "line", "description"], intro
-    assert intro[2]["options"]["delay"] - intro[1]["options"]["delay"] == 130
+    intro = page.locator("[data-motion-intro]").evaluate_all("els => els.map(e => ({name: getComputedStyle(e).animationName, delay: getComputedStyle(e).animationDelay}))")
+    assert [item["name"] for item in intro] == ["intro-fade", "intro-line", "intro-line", "intro-fade"], intro
+    assert round(float(intro[2]["delay"][:-1]) - float(intro[1]["delay"][:-1]), 2) == 0.13
     assert page.locator("h1").evaluate("e => getComputedStyle(e).fontFamily.toLowerCase().includes('onest')")
     page.locator("#approach h2").scroll_into_view_if_needed()
     page.wait_for_timeout(1000)
@@ -242,6 +242,71 @@ def desktop(page, url):
 
 
 def alternatives(browser, url):
+    context = browser.new_context(viewport={"width": 1440, "height": 1000})
+    page = context.new_page()
+    page.add_init_script("""window.firstHeroOpacity = null;
+        const sample = () => {
+            const line = document.querySelector('[data-motion-intro="line"]');
+            if (line) window.firstHeroOpacity = getComputedStyle(line).opacity;
+            else requestAnimationFrame(sample);
+        };
+        requestAnimationFrame(sample);
+    """)
+    page.route("**/_next/static/**/*.js", lambda route: route.abort())
+    page.goto(url + "ru/", wait_until="domcontentloaded")
+    page.wait_for_function("firstHeroOpacity !== null")
+    assert float(page.evaluate("firstHeroOpacity")) < 1
+    cards = page.locator("[data-gallery-card]")
+    expect(cards).to_have_count(5)
+    initial = cards.evaluate_all("els => els.map(e => ({name: getComputedStyle(e).animationName, delay: getComputedStyle(e).animationDelay, x: getComputedStyle(e).getPropertyValue('--project-x').trim()}))")
+    assert all(card["name"] == "projects-assemble" for card in initial), initial
+    assert [card["x"] for card in initial] == ["-120px", "0px", "120px", "120px", "120px"], initial
+    assert len({card["delay"] for card in initial}) == 1, initial
+    page.set_viewport_size({"width": 1920, "height": 1000})
+    assert cards.evaluate_all("els => els.map(e => getComputedStyle(e).getPropertyValue('--project-x').trim())") == ["-120px", "-60px", "60px", "120px", "120px"]
+    page.set_viewport_size({"width": 390, "height": 844})
+    assert cards.evaluate_all("els => els.map(e => getComputedStyle(e).getPropertyValue('--project-x').trim())") == ["-80px", "80px", "80px", "80px", "80px"]
+    assert cards.evaluate_all("""els => {
+        const animations = els.map(e => e.getAnimations().find(a => a.animationName === 'projects-assemble'));
+        animations.forEach(a => a.pause());
+        animations.forEach(a => { a.currentTime = 400; });
+        const first = new DOMMatrixReadOnly(getComputedStyle(els[0]).transform);
+        const second = new DOMMatrixReadOnly(getComputedStyle(els[1]).transform);
+        const directions = first.m41 < 0 && second.m41 > 0 && first.m42 > 0 && second.m42 > 0;
+        const inside = els.every((e, i) => {
+            const timing = animations[i].effect.getTiming();
+            const rail = e.parentElement.getBoundingClientRect();
+            return [0, 0.25, 0.5, 0.75, 1].every(progress => {
+                animations[i].currentTime = timing.delay + timing.duration * progress;
+                const rect = e.getBoundingClientRect();
+                return rect.top >= rail.top - 0.5 && rect.bottom <= rail.bottom + 0.5
+                    && rect.bottom <= document.querySelector('#approach').getBoundingClientRect().top;
+            });
+        });
+        const separated = [180, 400, 700, 1000, 1500, 2000].every(time => {
+            animations.forEach(a => { a.currentTime = time; });
+            return els.slice(1).every((e, i) => els[i].getBoundingClientRect().right <= e.getBoundingClientRect().left);
+        });
+        animations.forEach(a => { a.currentTime = 0; a.play(); });
+        return directions && inside && separated;
+    }""")
+    page.wait_for_timeout(2200)
+    assert page.locator('[data-motion-intro="line"]').first.evaluate("e => getComputedStyle(e).opacity") == "1"
+    assert cards.evaluate_all("els => els.every(e => getComputedStyle(e).opacity === '1')")
+    context.close()
+    print("PASS: Hero animates on first paint without waiting for JavaScript bundles")
+
+    context = browser.new_context(viewport={"width": 1440, "height": 1000})
+    page = context.new_page()
+    page.goto(url + "ru/", wait_until="domcontentloaded")
+    page.locator("[data-gallery-card]").first.focus()
+    assert page.locator("[data-gallery-card]").first.evaluate("e => getComputedStyle(e).opacity") == "1"
+    page.reload(wait_until="domcontentloaded")
+    page.locator('a[href="#projects"]').first.evaluate("e => e.click()")
+    assert page.locator("[data-project-intro]").evaluate_all("els => els.every(e => getComputedStyle(e).opacity === '1')")
+    context.close()
+    print("PASS: focus and project anchor immediately reveal animated targets")
+
     context = browser.new_context(java_script_enabled=False, viewport={"width": 1440, "height": 1000})
     page = context.new_page()
     page.goto(url)
@@ -253,7 +318,7 @@ def alternatives(browser, url):
     page = context.new_page()
     page.add_init_script("localStorage.setItem('portfolio-motion', 'off'); localStorage.setItem('portfolio-locale', 'ru');")
     page.goto(url, wait_until="networkidle")
-    assert page.locator("[data-motion-intro]").evaluate_all("els=>els.every(e=>e.getAnimations().length===0)")
+    assert page.locator("[data-motion-intro], [data-project-intro]").evaluate_all("els=>els.every(e=>e.getAnimations().length===0)")
     page.locator("[data-gallery-card]").first.click()
     expect(page.locator("dialog[open]")).to_be_visible()
     assert page.locator("dialog").evaluate("e=>e.getAnimations().every(a=>a.effect.getTiming().duration===0)")

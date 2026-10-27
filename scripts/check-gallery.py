@@ -46,6 +46,8 @@ def desktop_checks(page, url):
     expect(rail.locator("button").first).to_be_visible()
     assert page.locator("#projects > div > div").count() == 1, "Gallery controls or counter were reintroduced"
     page.wait_for_load_state("networkidle")
+    page.wait_for_function("""() => [...document.querySelectorAll('[data-gallery-card]')].every(
+        e => e.getAnimations().every(a => a.animationName !== 'projects-assemble'))""")
     for theme in ("light", "dark"):
         page.evaluate("theme => document.documentElement.classList.toggle('dark', theme === 'dark')", theme)
         for width in (320, 390, 768, 1440, 1920, 2560):

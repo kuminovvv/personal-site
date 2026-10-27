@@ -4,6 +4,7 @@ import { Roboto_Flex, Unbounded, Onest, Golos_Text, Geist_Mono } from "next/font
 import { SmoothScrollProvider } from "./providers/smooth-scroll-provider";
 import { SiteLayout } from "@/widgets/site-layout/ui/site-layout";
 import { localeBootstrapScript } from "@/shared/lib/i18n/locale-bootstrap-script";
+import { introBootstrapScript } from "@/shared/lib/motion/intro-bootstrap-script";
 import "./globals.css";
 
 const robotoFlex = Roboto_Flex({
@@ -31,10 +32,11 @@ const RootDocument = ({ children, locale }: Readonly<{ children: ReactNode; loca
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{if(localStorage.getItem("portfolio-theme")==="dark")document.documentElement.classList.add("dark")}catch(e){}try{var key="portfolio-language-navigation";var target=sessionStorage.getItem(key);sessionStorage.removeItem(key);if(target===location.pathname+location.search+location.hash)document.documentElement.dataset.skipPortfolioMotion="true"}catch(e){}})()`,
+            __html: `(function(){var html=document.documentElement,off=false;try{if(localStorage.getItem("portfolio-theme")==="dark")html.classList.add("dark");off=localStorage.getItem("portfolio-motion")==="off"}catch(e){}try{var key="portfolio-language-navigation";var target=sessionStorage.getItem(key);sessionStorage.removeItem(key);if(target===location.pathname+location.search+location.hash)html.dataset.skipPortfolioMotion="true"}catch(e){}if(!off&&!location.hash&&html.dataset.skipPortfolioMotion!=="true")html.dataset.introMotion="true"})()`,
           }}
         />
         <script dangerouslySetInnerHTML={{ __html: localeBootstrapScript }} />
+        <script dangerouslySetInnerHTML={{ __html: introBootstrapScript }} />
       </head>
       <body className="min-h-full">
         <SmoothScrollProvider>

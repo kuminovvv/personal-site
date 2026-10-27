@@ -22,20 +22,13 @@ def check(browser, url):
     context = browser.new_context(reduced_motion="reduce", viewport={"width": 1440, "height": 1000})
     context.add_init_script("localStorage.setItem('portfolio-locale', 'ru');")
     page = context.new_page()
-    page.add_init_script("""window.introCalls = 0;
-        const animate = Element.prototype.animate;
-        Element.prototype.animate = function(frames, options) {
-            if (this.dataset.motionIntro) window.introCalls++;
-            return animate.call(this, frames, options);
-        };
-    """)
     page.goto(url, wait_until="networkidle")
     control = page.get_by_label("Анимации на сайте", exact=True)
     assert page.evaluate("localStorage.getItem('portfolio-motion')") is None
     expect(control).to_have_attribute("aria-checked", "true")
     expect(page.locator("html")).to_have_attribute("data-site-motion", "on")
     assert page.evaluate("matchMedia('(prefers-reduced-motion: reduce)').matches")
-    page.wait_for_function("introCalls === 4")
+    assert page.locator('[data-motion-intro="line"]').first.evaluate("e => getComputedStyle(e).animationName") == "intro-line"
     page.wait_for_timeout(1100)
     card = page.locator("[data-gallery-card]").first
     card.hover()
@@ -50,7 +43,7 @@ def check(browser, url):
     page.evaluate("scrollTo({top:0,behavior:'instant'})")
     page.reload(wait_until="networkidle")
     expect(control).to_have_attribute("aria-checked", "true")
-    page.wait_for_function("introCalls === 4")
+    assert page.locator('[data-motion-intro="line"]').first.evaluate("e => getComputedStyle(e).animationName") == "intro-line"
     print("PASS: default enables Hero, hover, modal and backdrop under OS reduction; choice persists")
 
     art = page.locator("#lab object")

@@ -8,7 +8,7 @@
 | Область | Поведение |
 | --- | --- |
 | Навигация и Hero | Навигация, две строки заголовка с маской и задержкой 130 мс, затем описание |
-| Проекты | Одноразовое появление постеров, масштаб иллюстрации на fine pointer, cursor grab/grabbing |
+| Проекты | Заголовок и постеры появляются вместе с Hero: видимые карточки мягко сходятся снизу с разных сторон; направления зависят от ширины экрана |
 | Галерея | Инерция, мягкая привязка в пределах 64 px, drag/swipe и клавиатурные стрелки без отдельной панели управления |
 | Модальные окна | Белый экран на весь viewport, блок контента по своей высоте расположен по центру; fade/scale 300 мс, обратный переход 220 мс; в свободных полях курсор заменяется крестиком для закрытия |
 | Мой подход | Заголовок, раскрытие панели и последовательное появление трёх смысловых блоков |
@@ -25,8 +25,8 @@ Intersection Observer; для hover — Tailwind/CSS transitions. У Creative La
 - `src/shared/lib/motion/tokens.ts` — durations, delays, easings, stagger,
   response/precision сглаживания и настройки инерции/привязки.
 - `src/shared/lib/motion/reveal.ts` — варианты появления и общие параметры.
-- `src/widgets/visual-portfolio/ui/portfolio-motion.tsx` — одноразовое включение
-  анимаций по семантическим `data-motion` и `data-motion-intro`.
+- `src/app/globals.css` — вступление Hero и проектов при первом отображении, до гидратации;
+  `src/widgets/visual-portfolio/ui/portfolio-motion.tsx` — одноразовые reveal по `data-motion`.
 - `model/use-gallery-drag.ts`, `model/use-gallery-position.ts` —
   drag, остановка и мягкая привязка без счётчика и отдельных кнопок.
 - `model/use-project-location.ts`, `ui/project-gallery.tsx`,

@@ -165,6 +165,12 @@ def language_motion_checks(browser, origin):
     page = context.new_page()
     page.add_init_script("""localStorage.setItem('portfolio-locale', 'ru');
         window.portfolioRevealCalls = [];
+        window.portfolioIntroStarts = 0;
+        window.projectIntroStarts = 0;
+        document.addEventListener('animationstart', event => {
+            if (event.target.dataset.motionIntro === 'line') window.portfolioIntroStarts++;
+            if (event.target.hasAttribute('data-project-intro')) window.projectIntroStarts++;
+        });
         const originalAnimate = Element.prototype.animate;
         Element.prototype.animate = function(frames, options) {
             if (this.dataset.motionIntro || this.dataset.motion)
@@ -173,8 +179,8 @@ def language_motion_checks(browser, origin):
         };
     """)
     page.goto(origin + "/ru/", wait_until="networkidle")
-    page.wait_for_timeout(1100)
-    assert page.evaluate("portfolioRevealCalls.filter(x => x === 'line').length") == 2
+    page.wait_for_timeout(2200)
+    assert page.evaluate("portfolioIntroStarts") == 2
     first_card = page.locator("[data-gallery-card]").first
     assert first_card.evaluate("e => e.getBoundingClientRect().top < innerHeight")
     assert first_card.evaluate("e => getComputedStyle(e).opacity === '1'")
@@ -186,18 +192,23 @@ def language_motion_checks(browser, origin):
     assert page.evaluate("portfolioRevealCalls.filter(x => x === 'card').length") == 0
 
     before_switch = page.evaluate("portfolioRevealCalls.length")
+    project_starts = page.evaluate("projectIntroStarts")
+    assert project_starts == 6
     page.evaluate("window.homeBeforeSwitch = document.querySelector('[data-visual-home]')")
     page.get_by_role("navigation", name="Навигация по главной").get_by_role("link", name="English").click()
     page.wait_for_url("**/en/")
     page.wait_for_load_state("networkidle")
     assert page.evaluate("document.querySelector('[data-visual-home]') === window.homeBeforeSwitch")
     assert page.evaluate("portfolioRevealCalls.length") == before_switch
+    assert page.evaluate("portfolioIntroStarts") == 2
+    assert page.evaluate("projectIntroStarts") == project_starts
     assert page.locator("[data-gallery-card]").first.evaluate("e => getComputedStyle(e).opacity === '1'")
 
     page.get_by_role("navigation", name="Home page navigation").get_by_role("link", name="Русский").click()
     page.wait_for_url(origin + "/ru/")
     page.wait_for_load_state("networkidle")
     assert page.evaluate("portfolioRevealCalls.length") == before_switch
+    assert page.evaluate("projectIntroStarts") == project_starts
 
     page.locator("[data-gallery-card]").first.click()
     expect(page.get_by_role("dialog")).to_be_visible()
@@ -212,7 +223,7 @@ def language_motion_checks(browser, origin):
 
     page.goto(origin + "/en/", wait_until="networkidle")
     page.wait_for_timeout(1100)
-    assert page.evaluate("portfolioRevealCalls.filter(x => x === 'line').length") == 2
+    assert page.evaluate("portfolioIntroStarts") == 2
     context.close()
     print("PASS: first-screen cards stay visible; scroll and RU/EN switches do not replay intro or flash cards")
 
@@ -282,11 +293,9 @@ def first_english_visit_motion_checks(browser, origin):
         context = browser.new_context(viewport={"width": 1440, "height": 1000}, locale="ru-RU")
         page = context.new_page()
         page.add_init_script("""window.portfolioRevealCalls = [];
-            const nativeAnimate = Element.prototype.animate;
-            Element.prototype.animate = function(frames, options) {
-                if (this.dataset.motionIntro) window.portfolioRevealCalls.push(this.dataset.motionIntro);
-                return nativeAnimate.call(this, frames, options);
-            };
+            document.addEventListener('animationstart', event => {
+                if (event.target.dataset.motionIntro) window.portfolioRevealCalls.push(event.target.dataset.motionIntro);
+            });
         """)
         if entry == "country":
             page.route("https://ipwho.is/?fields=success,country_code",
@@ -299,7 +308,7 @@ def first_english_visit_motion_checks(browser, origin):
         page.goto(origin + ("/en/" if entry == "direct" else "/"), wait_until="networkidle")
         page.wait_for_url("**/en/")
         assert page.locator("html").get_attribute("data-skip-portfolio-motion") is None, entry
-        page.wait_for_function("portfolioRevealCalls.filter(kind => kind === 'line').length === 2")
+        page.wait_for_function("portfolioRevealCalls.length === 4")
         assert page.evaluate("portfolioRevealCalls") == ["nav", "line", "line", "description"], entry
         page.wait_for_timeout(1100)
         assert len(page.evaluate("portfolioRevealCalls")) == 4, entry

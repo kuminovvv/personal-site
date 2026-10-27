@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useSyncExternalStore } from "react";
-import { motionTokens } from "@/shared/lib/motion/tokens";
 import { revealFrames, revealOptions, type RevealKind } from "@/shared/lib/motion/reveal";
 import { isMotionReduced, subscribeMotionPreference } from "@/shared/lib/motion/preference";
 
@@ -52,23 +51,6 @@ export const PortfolioMotion = () => {
       animation.onfinish = () => finish(element);
     };
 
-    // Strict Mode runs an effect setup/cleanup twice in development.
-    // Deferring the intro lets the first setup cancel cleanly before it plays.
-    const introFrame = requestAnimationFrame(() => {
-      root.querySelectorAll<HTMLElement>("[data-motion-intro]").forEach((element) => {
-        const bounds = element.getBoundingClientRect();
-        if (completed.has(element) || bounds.bottom <= 0 || window.scrollY > window.innerHeight / 2 || window.location.hash) return;
-        const intro = element.dataset.motionIntro;
-        const line = Number(element.dataset.motionOrder) || 0;
-        play(element, revealFrames(intro === "line" ? "line" : "fade"), {
-          duration: intro === "line" ? motionTokens.duration.hero : motionTokens.duration.reveal,
-          delay: intro === "nav" ? 0 : intro === "description" ? motionTokens.delay.intro : motionTokens.delay.hero + line * motionTokens.delay.line,
-          easing: motionTokens.easing.out,
-          fill: "backwards",
-        });
-      });
-    });
-
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(({ target, isIntersecting, boundingClientRect }) => {
         const element = target as HTMLElement;
@@ -87,6 +69,11 @@ export const PortfolioMotion = () => {
     const observe = (element: HTMLElement) => {
       if (observed.has(element) || completed.has(element)) return;
       observed.add(element);
+      // The initial project entrance starts in CSS before hydration.
+      if (element.hasAttribute("data-project-intro") && document.documentElement.dataset.introMotion === "true") {
+        completed.add(element);
+        return;
+      }
       const bounds = element.getBoundingClientRect();
       // The visible edge of the gallery is part of the first screen.
       // Keep visible elements on screen instead of flashing them from opacity 0.
@@ -143,6 +130,7 @@ export const PortfolioMotion = () => {
     };
     const onMotionChange = () => {
       if (!isMotionReduced()) return;
+      delete document.documentElement.dataset.introMotion;
       active.forEach((_, element) => finish(element));
       pending.forEach((element) => {
         completed.add(element);
@@ -154,7 +142,6 @@ export const PortfolioMotion = () => {
     root.addEventListener("focusin", onFocus);
     root.addEventListener("click", onAnchorClick);
     return () => {
-      cancelAnimationFrame(introFrame);
       unsubscribe();
       observer.disconnect();
       mutations.disconnect();
