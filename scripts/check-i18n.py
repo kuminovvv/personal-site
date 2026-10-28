@@ -228,81 +228,60 @@ def language_motion_checks(browser, origin):
     print("PASS: first-screen cards stay visible; scroll and RU/EN switches do not replay intro or flash cards")
 
 
-def country_defaults_checks(browser, origin):
-    for country in ("RU", "DE"):
-        context = browser.new_context(locale="ru-RU")
+def language_defaults_checks(browser, origin):
+    cases = [
+        ("ru-RU", None, "ru", "", "/"),
+        ("en-US", None, "en", "", "/"),
+        ("de-DE", None, "en", "", "/"),
+        ("ru-RU", "en", "en", "", "/"),
+        ("en-US", "ru", "ru", "", "/"),
+        ("ru-RU", "invalid", "ru", "", "/"),
+        ("ru-RU", None, "ru", "Storage.prototype.getItem = () => { throw new Error('blocked'); };", "/"),
+        ("en-US", None, "ru", "Object.defineProperty(navigator, 'languages', {get: () => []}); Object.defineProperty(navigator, 'language', {get: () => ''});", "/"),
+        ("en-US", "en", "ru", "", "/ru/"),
+        ("ru-RU", "ru", "en", "", "/en/"),
+        ("en-US", None, "en", "", "/projects/soobota/"),
+    ]
+    for language, selected, expected, setup, path in cases:
+        context = browser.new_context(locale=language)
+        # Old country-based results must not override the browser language.
+        context.add_init_script("sessionStorage.setItem('portfolio-auto-locale', '" + ("en" if expected == "ru" else "ru") + "');")
+        if selected is not None:
+            context.add_init_script("localStorage.setItem('portfolio-locale', " + json.dumps(selected) + ");")
+        if setup:
+            context.add_init_script(setup)
         page = context.new_page()
-        lookups = []
+        external_requests = []
 
-        def mock_country(route):
-            lookups.append(1)
-            route.fulfill(status=200, content_type="application/json",
-                          body=json.dumps({"success": True, "country_code": country}))
+        def block_external(route):
+            if route.request.url.startswith(origin + "/"):
+                route.continue_()
+            else:
+                external_requests.append(route.request.url)
+                route.abort()
 
-        page.route("https://ipwho.is/?fields=success,country_code", mock_country)
-        page.goto(origin + "/?source=geo#projects", wait_until="networkidle")
-        if country == "RU":
-            page.wait_for_url("**/ru/?source=geo#projects")
-            assert page.locator("html").get_attribute("lang") == "ru"
-            assert page.locator("html").get_attribute("data-locale-pending") is None
-            assert page.evaluate("sessionStorage.getItem('portfolio-auto-locale')") == "ru"
-            page.reload(wait_until="networkidle")
-            assert page.locator("html").get_attribute("lang") == "ru"
-            page.get_by_role("navigation", name="Навигация по главной").get_by_role("link", name="English").click()
-            page.wait_for_url("**/en/?source=geo#projects")
-            assert page.evaluate("localStorage.getItem('portfolio-locale')") == "en"
-            page.goto(origin + "/", wait_until="networkidle")
-            page.wait_for_url("**/en/")
-        else:
-            page.wait_for_url("**/en/?source=geo#projects")
-            assert page.locator("html").get_attribute("lang") == "en"
-            assert page.locator("html").get_attribute("data-skip-portfolio-motion") is None
-            assert page.evaluate("sessionStorage.getItem('portfolio-auto-locale')") == "en"
-            assert page.evaluate("localStorage.getItem('portfolio-locale')") is None
-            page.goto(origin + "/", wait_until="networkidle")
-            page.wait_for_url("**/en/")
-            page.get_by_role("navigation", name="Home page navigation").get_by_role("link", name="Русский").click()
-            page.wait_for_url(origin + "/ru/")
-            assert page.evaluate("localStorage.getItem('portfolio-locale')") == "ru"
-            page.reload(wait_until="networkidle")
-            assert page.locator("html").get_attribute("lang") == "ru"
-        assert len(lookups) == 1, (country, len(lookups))
+        page.route("**/*", block_external)
+        destination = path if path.startswith(("/ru/", "/en/")) else "/" + expected + path
+        page.goto(origin + path + "?source=network#work", wait_until="domcontentloaded")
+        page.wait_for_url(origin + destination + "?source=network#work", timeout=2000)
+        page.wait_for_load_state("networkidle")
+        assert page.locator("html").get_attribute("lang") == expected
+        assert page.locator("html").get_attribute("data-locale-pending") is None
+        assert page.locator("body").evaluate("e => getComputedStyle(e).visibility") == "visible"
+        assert not external_requests, external_requests
         context.close()
-
-    context = browser.new_context(locale="en-US")
-    page = context.new_page()
-    page.route("https://ipwho.is/?fields=success,country_code", lambda route: route.abort())
-    page.goto(origin + "/", wait_until="networkidle")
-    page.wait_for_url("**/en/")
-    context.close()
-
-    context = browser.new_context(locale="ru-RU")
-    page = context.new_page()
-    page.route("https://ipwho.is/?fields=success,country_code",
-               lambda route: route.fulfill(status=200, content_type="application/json",
-                                           body=json.dumps({"success": True, "country_code": "FR"})))
-    page.goto(origin + "/projects/soobota/?source=case#work", wait_until="networkidle")
-    page.wait_for_url("**/en/projects/soobota/?source=case#work")
-    assert page.locator("html").get_attribute("lang") == "en"
-    context.close()
-    print("PASS: Russian and foreign IP defaults, browser-language fallback, session cache and persistent manual choice")
+    print("PASS: immediate language selection with all external requests blocked; saved choice, stale geo cache, blocked storage, direct URLs and query/hash preserved")
 
 
 def first_english_visit_motion_checks(browser, origin):
-    for entry in ("country", "cached", "preference", "direct"):
-        context = browser.new_context(viewport={"width": 1440, "height": 1000}, locale="ru-RU")
+    for entry in ("browser", "preference", "direct"):
+        context = browser.new_context(viewport={"width": 1440, "height": 1000}, locale="en-US")
         page = context.new_page()
         page.add_init_script("""window.portfolioRevealCalls = [];
             document.addEventListener('animationstart', event => {
                 if (event.target.dataset.motionIntro) window.portfolioRevealCalls.push(event.target.dataset.motionIntro);
             });
         """)
-        if entry == "country":
-            page.route("https://ipwho.is/?fields=success,country_code",
-                       lambda route: route.fulfill(status=200, content_type="application/json",
-                                                   body=json.dumps({"success": True, "country_code": "DE"})))
-        if entry == "cached":
-            page.add_init_script("sessionStorage.setItem('portfolio-auto-locale', 'en');")
         if entry == "preference":
             page.add_init_script("localStorage.setItem('portfolio-locale', 'en');")
         page.goto(origin + ("/en/" if entry == "direct" else "/"), wait_until="networkidle")
@@ -313,7 +292,7 @@ def first_english_visit_motion_checks(browser, origin):
         page.wait_for_timeout(1100)
         assert len(page.evaluate("portfolioRevealCalls")) == 4, entry
         context.close()
-    print("PASS: first EN entrance animates after geo, cached or saved locale redirect and direct URL")
+    print("PASS: first EN entrance animates after browser-language or saved-choice redirect and direct URL")
 
 
 def run():
@@ -329,7 +308,7 @@ def run():
             try:
                 browser_checks(browser, f"http://127.0.0.1:{server.server_port}")
                 language_motion_checks(browser, f"http://127.0.0.1:{server.server_port}")
-                country_defaults_checks(browser, f"http://127.0.0.1:{server.server_port}")
+                language_defaults_checks(browser, f"http://127.0.0.1:{server.server_port}")
                 first_english_visit_motion_checks(browser, f"http://127.0.0.1:{server.server_port}")
             finally:
                 browser.close()

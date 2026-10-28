@@ -1,22 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef } from "react";
 import { revealFrames, revealOptions, type RevealKind } from "@/shared/lib/motion/reveal";
 import { isMotionReduced, subscribeMotionPreference } from "@/shared/lib/motion/preference";
-
-const subscribeLocaleReady = (onChange: () => void) => {
-  window.addEventListener("portfolio:locale-ready", onChange);
-  return () => window.removeEventListener("portfolio:locale-ready", onChange);
-};
-const getLocaleReady = () => document.documentElement.dataset.localePending !== "true";
 
 // Content is visible in the server HTML. Only an active animation changes it.
 export const PortfolioMotion = () => {
   const completedRef = useRef(new WeakSet<HTMLElement>());
-  const localeReady = useSyncExternalStore(subscribeLocaleReady, getLocaleReady, () => false);
 
   useEffect(() => {
-    if (!localeReady) return;
     const root = document.querySelector<HTMLElement>("[data-visual-home]");
     if (!root || !Element.prototype.animate || !("IntersectionObserver" in window)) return;
     // Locale navigation creates a fresh document. Keep its content fully visible;
@@ -150,7 +142,7 @@ export const PortfolioMotion = () => {
       root.removeEventListener("focusin", onFocus);
       root.removeEventListener("click", onAnchorClick);
     };
-  }, [localeReady]);
+  }, []);
 
   return null;
 };
