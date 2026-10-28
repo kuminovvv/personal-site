@@ -171,7 +171,7 @@ export const ProjectModal = ({ project, locale, isOpen, onCloseAction, onExitedA
       onClick={(event) => {
         if (event.target === event.currentTarget) close();
       }}
-      className="fixed inset-0 m-0 flex h-[100dvh] max-h-none w-screen max-w-none flex-col justify-center overflow-y-auto overscroll-contain rounded-none border-0 bg-white p-0 py-[clamp(24px,5vh,72px)] text-[#17241b] backdrop:bg-white backdrop:opacity-100 backdrop:transition-opacity backdrop:duration-(--motion-modal) backdrop:ease-(--motion-out) starting:backdrop:opacity-0 data-[closing=true]:backdrop:opacity-0 data-[closing=true]:backdrop:duration-(--motion-exit) site-still:backdrop:transition-none focus:outline-none"
+      className="fixed inset-0 m-0 flex h-[100dvh] max-h-none w-screen max-w-none flex-col overflow-y-auto overscroll-contain rounded-none border-0 bg-white p-0 py-[clamp(24px,5vh,72px)] text-[#17241b] backdrop:bg-white backdrop:opacity-100 backdrop:transition-opacity backdrop:duration-(--motion-modal) backdrop:ease-(--motion-out) starting:backdrop:opacity-0 data-[closing=true]:backdrop:opacity-0 data-[closing=true]:backdrop:duration-(--motion-exit) site-still:backdrop:transition-none focus:outline-none"
     >
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
         <div ref={exitCursorRef} data-visible="false" className="absolute flex size-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#17241b] text-[28px] leading-none text-white opacity-0 data-[visible=true]:opacity-100">×</div>
