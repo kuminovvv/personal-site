@@ -33,3 +33,5 @@ git push origin v0.1.1
 - Активный каталог: `readlink -f /var/www/kuminovvv.com/current`.
 
 Деплой работает с правами `site-deploy`, без root/SSH-ключей в GitHub. Предыдущие каталоги остаются в `releases/` для восстановления. Nginx и конфигурация Let's Encrypt при релизах не изменяются. Исходники Backend не задействованы.
+
+Настройки сжатия, кеширования и отката Nginx описаны в [server-performance.md](server-performance.md).
