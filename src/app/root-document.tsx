@@ -20,7 +20,7 @@ const unbounded = Unbounded({
 });
 const onest = Onest({ subsets: ["latin", "cyrillic", "cyrillic-ext"], variable: "--font-visual-display", display: "swap", weight: "variable" });
 const golos = Golos_Text({ subsets: ["latin", "cyrillic"], variable: "--font-visual-text", display: "swap" });
-const geistMono = Geist_Mono({ subsets: ["latin", "cyrillic"], variable: "--font-visual-mono", display: "swap" });
+const geistMono = Geist_Mono({ subsets: ["latin", "cyrillic"], variable: "--font-visual-mono", display: "swap", preload: false });
 
 const RootDocument = ({ children, locale }: Readonly<{ children: ReactNode; locale: Locale }>) => {
   return (

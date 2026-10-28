@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { isMotionReduced } from "@/shared/lib/motion/preference";
 
 import { useCallback, useState } from "react";
@@ -8,9 +9,10 @@ import { useGalleryDrag } from "../model/use-gallery-drag";
 import { useGalleryPosition } from "../model/use-gallery-position";
 import { useProjectLocation } from "../model/use-project-location";
 import { ProjectCard } from "./project-card";
-import { ProjectModal } from "./project-modal";
 import type { Locale } from "@/shared/lib/i18n/locale";
 import { getVisualText } from "../model/locale-content";
+
+const ProjectModal = dynamic(() => import("./project-modal").then((module) => module.ProjectModal));
 
 export const ProjectGallery = ({ locale = "ru" }: { locale?: Locale }) => {
   const copy = getVisualText(locale);
