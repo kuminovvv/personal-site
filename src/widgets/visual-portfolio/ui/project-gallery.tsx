@@ -48,7 +48,7 @@ export const ProjectGallery = ({ locale = "ru" }: { locale?: Locale }) => {
   };
 
   return (
-    <section id="projects" className="relative min-w-0">
+    <section id="projects" className="relative min-w-0 pt-2">
       <h2 data-motion="heading" data-project-intro className="mb-18.25 text-center font-(family-name:--visual-heading-font-stack) text-[clamp(34px,3vw,52px)] leading-[1.08] font-semibold tracking-[-.022em] text-[#0b0c0b] max-[640px]:mb-10 max-[360px]:text-[32px]">{copy.projects}</h2>
       <div className="relative mx-[calc((100%_-_100cqw)/2)] w-[100cqw] [--gallery-inset:max(var(--visual-page-inset),calc((100cqw_-_1520px)/2))]">
         <div
@@ -56,7 +56,7 @@ export const ProjectGallery = ({ locale = "ru" }: { locale?: Locale }) => {
           data-gallery-rail
           tabIndex={0}
           aria-label={copy.galleryAria}
-          className="-mb-16 flex cursor-grab gap-6 overflow-x-auto overscroll-x-contain scroll-auto pb-16 pl-(--gallery-inset) pr-[max(32px,calc(100%_-_var(--gallery-inset)_-_408px))] select-none [scrollbar-width:none] data-[dragging=true]:cursor-grabbing [&::-webkit-scrollbar]:hidden max-[520px]:pr-[max(32px,calc(100%_-_var(--gallery-inset)_-_320px))]"
+          className="-mb-16 flex cursor-grab gap-6 overflow-x-auto overscroll-x-contain scroll-auto pb-16 pl-(--gallery-inset) pr-[max(32px,calc(100%_-_var(--gallery-inset)_-_408px))] select-none [scrollbar-width:none] data-[dragging=true]:cursor-grabbing [&::-webkit-scrollbar]:hidden max-[520px]:pr-[max(32px,calc(100%_-_var(--gallery-inset)_-_320px))] p-2"
           onPointerDown={(event) => { cancelSettle(); onPointerDown(event); }}
           onPointerMove={onPointerMove}
           onPointerUp={(event) => { finishDrag(event); onScroll(); }}
