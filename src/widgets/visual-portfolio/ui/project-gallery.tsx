@@ -50,7 +50,7 @@ export const ProjectGallery = ({ locale = "ru" }: { locale?: Locale }) => {
   return (
     <section id="projects" className="relative min-w-0">
       <h2 data-motion="heading" data-project-intro className="mb-18.25 text-center font-(family-name:--visual-heading-font-stack) text-[clamp(34px,3vw,52px)] leading-[1.08] font-semibold tracking-[-.022em] text-[#0b0c0b] max-[640px]:mb-10 max-[360px]:text-[32px]">{copy.projects}</h2>
-      <div className="relative mx-[calc((100%_-_100cqw)/2)] w-[100cqw] [--gallery-inset:max(clamp(16px,10.4167vw,200px),calc((100cqw_-_1520px)/2))]">
+      <div className="relative mx-[calc((100%_-_100cqw)/2)] w-[100cqw] [--gallery-inset:max(var(--visual-page-inset),calc((100cqw_-_1520px)/2))]">
         <div
           ref={scrollRef}
           data-gallery-rail

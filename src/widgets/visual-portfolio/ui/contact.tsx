@@ -17,7 +17,7 @@ export const Contact = ({ locale = "ru" }: { locale?: Locale }) => {
   <section
     id="contact"
     aria-labelledby="visual-contact-title"
-    className="relative left-1/2 w-[calc(100%+2*clamp(16px,10.4167vw,200px))] -translate-x-1/2 bg-[#133a2c] text-[#f7fff7] min-[1600px]:min-h-[1292px]"
+    className="relative left-1/2 w-[calc(100%+2*var(--visual-page-inset))] -translate-x-1/2 bg-[#133a2c] text-[#f7fff7] min-[1600px]:min-h-[1292px]"
   >
     <div className="mx-auto flex w-full max-w-[1520px] flex-col gap-[70px] px-6 pt-[97px] pb-[65px] sm:px-10 2xl:px-0 max-[768px]:gap-12 max-[768px]:pt-16 max-[768px]:pb-9">
       <span className="font-[family-name:var(--font-visual-mono)] text-[14px] leading-none tracking-[.0065em] text-[#d1e9d6]">

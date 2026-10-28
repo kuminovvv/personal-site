@@ -196,8 +196,15 @@ body {
 
 /* The new editorial homepage has its own full-width Figma composition. */
 [data-site-layout]:has([data-visual-home]) {
+  --visual-page-inset: clamp(16px, 10.4167vw, 200px);
   background: #fff;
   container-type: inline-size;
+}
+@media (max-width: 1600px) {
+  [data-site-layout]:has([data-visual-home]) { --visual-page-inset: clamp(16px, calc(25vw - 220px), 166px); }
+}
+@media (max-width: 1024px) {
+  [data-site-layout]:has([data-visual-home]) { --visual-page-inset: clamp(16px, 4vw, 32px); }
 }
 [data-site-layout]:has([data-visual-home]) > header,
 [data-site-layout]:has([data-visual-home]) > footer {
@@ -206,7 +213,7 @@ body {
 [data-site-layout]:has([data-visual-home]) > main {
   width: 100%;
   max-width: none;
-  padding: 16px clamp(16px, 10.4167vw, 200px) 0;
+  padding: 16px var(--visual-page-inset) 0;
   overflow: visible;
 }
 [data-visual-home] {
