@@ -1,12 +1,15 @@
 import type { SiteContent } from "@/shared/lib/content/get-site-content";
-import { ResumeCareerCard } from "./resume-career-card";
 import type { Locale } from "@/shared/lib/i18n/locale";
+import { ResumeCareerCard } from "./resume-career-card";
 import { getResumeUiCopy } from "../model/ui-copy";
 
 type ResumeCareerProps = { jobs: SiteContent["home"]["experience"]["jobs"]; locale?: Locale };
 
 export const ResumeCareer = (props: ResumeCareerProps) => {
-  const { jobs, locale = "ru" } = props;
+  const {
+    jobs,
+    locale = "ru",
+  } = props;
   const copy = getResumeUiCopy(locale);
 
   return (

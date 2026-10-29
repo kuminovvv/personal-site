@@ -6,7 +6,11 @@ import { Button } from "@/shared/ui/button";
 import { localizeHref, type Locale } from "@/shared/lib/i18n/locale";
 import { getShareCopy } from "../model/copy";
 
-export const ShareButton = ({ locale = "ru" }: { locale?: Locale }) => {
+export const ShareButton = (props: { locale?: Locale }) => {
+  const {
+    locale = "ru",
+  } = props;
+
   const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
   const copy = getShareCopy(locale);
 

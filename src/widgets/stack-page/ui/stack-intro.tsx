@@ -1,7 +1,13 @@
-import type { getStackContent } from "../model/stack-content";
 import type { Locale } from "@/shared/lib/i18n/locale";
+import type { getStackContent } from "../model/stack-content";
 
-export const StackIntro = ({ content, locale = "ru" }: { content: ReturnType<typeof getStackContent>["intro"]; locale?: Locale }) => {
+type StackIntroProps = { content: ReturnType<typeof getStackContent>["intro"]; locale?: Locale };
+
+export const StackIntro = (props: StackIntroProps) => {
+  const {
+    content,
+    locale = "ru",
+  } = props;
   const intro = content;
 
   return (

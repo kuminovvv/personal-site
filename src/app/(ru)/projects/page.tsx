@@ -1,5 +1,5 @@
 import { getPageMetadata } from "@/shared/lib/i18n/metadata";
-import { ProjectsCatalog } from "@/widgets/projects-catalog/ui/projects-catalog";
+import { ProjectsCatalog } from "@/widgets/projects-catalog";
 import { getSiteContent } from "@/shared/lib/content/get-site-content";
 
 export const metadata = getPageMetadata("projects");

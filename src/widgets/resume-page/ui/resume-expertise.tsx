@@ -1,8 +1,13 @@
-import { getResumeExpertise, resumeExpertise } from "../model/resume-content";
 import type { Locale } from "@/shared/lib/i18n/locale";
+import { getResumeExpertise, resumeExpertise } from "../model/resume-content";
 import { getResumeUiCopy } from "../model/ui-copy";
 
-export const ResumeExpertise = ({ locale = "ru" }: { locale?: Locale }) => {
+type ResumeExpertiseProps = { locale?: Locale };
+
+export const ResumeExpertise = (props: ResumeExpertiseProps) => {
+  const {
+    locale = "ru",
+  } = props;
   const items = locale === "en" ? getResumeExpertise(locale) : resumeExpertise;
   const copy = getResumeUiCopy(locale);
   return (

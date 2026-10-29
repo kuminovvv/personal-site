@@ -43,10 +43,19 @@ const createComponent = (svg, name) => {
     component,
     code: `import type { SVGProps } from "react";
 
-type Props = SVGProps<SVGSVGElement> & { size?: number | string };
+type IconProps = SVGProps<SVGSVGElement> & { size?: number | string };
 
 // Source: Hugeicons Free Stroke Rounded (MIT), https://hugeicons.com/icons
-export const ${component} = ({ size = 24, width, height, color = "currentColor", strokeWidth = 1.5, ...props }: Props) => (
+export const ${component} = (props: IconProps) => {
+  const {
+    size = 24,
+    width,
+    height,
+    color = "currentColor",
+    strokeWidth = 1.5,
+    ...rest
+  } = props;
+  return (
   <svg
     width={width ?? size}
     height={height ?? size}
@@ -55,11 +64,12 @@ export const ${component} = ({ size = 24, width, height, color = "currentColor",
     color={color}
     strokeWidth={strokeWidth}
     xmlns="http://www.w3.org/2000/svg"
-    {...props}
+    {...rest}
   >
     ${inner.replace(/\n/g, "\n    ")}
   </svg>
-);
+  );
+};
 `,
   };
 };

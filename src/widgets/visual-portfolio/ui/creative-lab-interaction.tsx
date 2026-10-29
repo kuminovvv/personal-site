@@ -1,11 +1,14 @@
-"use client";
-
-import { useOrbitInteraction } from "../model/use-orbit-interaction";
 import Image from "next/image";
 import type { Locale } from "@/shared/lib/i18n/locale";
+import { useOrbitInteraction } from "../model/use-orbit-interaction";
 import { getVisualExtraText } from "../model/locale-content";
 
-export const CreativeLabInteraction = ({ locale = "ru" }: { locale?: Locale }) => {
+type CreativeLabInteractionProps = { locale?: Locale };
+
+export const CreativeLabInteraction = (props: CreativeLabInteractionProps) => {
+  const {
+    locale = "ru",
+  } = props;
   const { objectRef, onLoad, onPointerMove, onPointerLeave } = useOrbitInteraction();
   const alt = getVisualExtraText(locale).labImage;
 

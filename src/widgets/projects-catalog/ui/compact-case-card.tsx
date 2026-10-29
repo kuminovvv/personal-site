@@ -13,7 +13,12 @@ type CompactCaseCardProps = {
   locale?: Locale;
 };
 
-export const CompactCaseCard = ({ work, locale = "ru" }: CompactCaseCardProps) => (
+export const CompactCaseCard = (props: CompactCaseCardProps) => {
+  const {
+    work,
+    locale = "ru",
+  } = props;
+  return (
   <article className="relative flex min-h-64.5 min-w-0 flex-col justify-between gap-5 rounded-site-32 bg-site-surface px-5.5 pt-5.5 pb-5 max-[680px]:min-h-62.5">
     <div className="flex items-start justify-between gap-3">
       <span className="text-[11px] leading-tight font-semibold text-site-green-text dark:text-site-green">
@@ -37,4 +42,5 @@ export const CompactCaseCard = ({ work, locale = "ru" }: CompactCaseCardProps) =
         </Link>
     </div>
   </article>
-);
+  );
+};

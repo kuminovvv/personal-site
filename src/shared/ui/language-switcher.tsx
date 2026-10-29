@@ -1,27 +1,21 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useSyncExternalStore } from "react";
+import { usePathname } from "next/navigation";
 import { localizeHref, type Locale } from "@/shared/lib/i18n/locale";
-import { createDictionary } from "@/shared/lib/i18n/dictionary";
+import { getLanguageLocationSnapshot, getLanguageServerSnapshot, getLanguageSwitcherCopy, subscribeLanguageLocation } from "@/shared/lib/language-switcher";
 import { cn } from "@/shared/lib/utils";
 
-const getCopy = createDictionary("language-switcher", {
-  ru: { label: "Язык сайта", ru: "Русский", en: "English" },
-  en: { label: "Site language", ru: "Русский", en: "English" },
-});
-const subscribe = (notify: () => void) => {
-  const events = ["popstate", "hashchange", "portfolio:project-change", "portfolio:location-change", "portfolio:locale-change"];
-  events.forEach((event) => window.addEventListener(event, notify));
-  return () => events.forEach((event) => window.removeEventListener(event, notify));
-};
-const getSnapshot = () => window.location.pathname + window.location.search + window.location.hash;
+type LanguageSwitcherProps = { locale: Locale; className?: string };
 
-export const LanguageSwitcher = (props: { locale: Locale; className?: string }) => {
-  const { locale, className } = props;
+export const LanguageSwitcher = (props: LanguageSwitcherProps) => {
+  const {
+    locale,
+    className,
+  } = props;
   const pathname = usePathname();
-  const location = useSyncExternalStore(subscribe, getSnapshot, () => pathname);
-  const copy = getCopy(locale);
+  const location = useSyncExternalStore(subscribeLanguageLocation, getLanguageLocationSnapshot, () => getLanguageServerSnapshot(pathname));
+  const copy = getLanguageSwitcherCopy(locale);
 
   return (
     <nav aria-label={copy.label} className={cn("inline-flex shrink-0 items-center gap-2 text-[12px]", className)}>

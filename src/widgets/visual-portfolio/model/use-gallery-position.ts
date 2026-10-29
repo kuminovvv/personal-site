@@ -1,5 +1,3 @@
-"use client";
-
 import { isMotionReduced } from "@/shared/lib/motion/preference";
 
 import { useCallback, useEffect, useRef, type RefObject } from "react";
@@ -7,7 +5,7 @@ import { motionTokens } from "@/shared/lib/motion/tokens";
 
 type GalleryElement = HTMLDivElement;
 
-type GalleryActivity = { pressed: boolean; inertia: boolean };
+type GalleryActivity = { isPressed: boolean; hasInertia: boolean };
 
 export const useGalleryPosition = (scrollRef: RefObject<GalleryElement | null>, activityRef: RefObject<GalleryActivity>) => {
   const settleTimerRef = useRef<number | null>(null);
@@ -25,7 +23,7 @@ export const useGalleryPosition = (scrollRef: RefObject<GalleryElement | null>, 
   const settle = useCallback(() => {
     const element = scrollRef.current;
     const targets = getTargets();
-    if (!element || !targets.length || activityRef.current?.pressed || activityRef.current?.inertia || isMotionReduced()) return;
+    if (!element || !targets.length || activityRef.current?.isPressed || activityRef.current?.hasInertia || isMotionReduced()) return;
     const position = element.scrollLeft;
     const target = targets.reduce((closest, candidate) => Math.abs(candidate - position) < Math.abs(closest - position) ? candidate : closest, targets[0]);
     if (Math.abs(target - position) < 4 || Math.abs(target - position) > motionTokens.gallery.snapDistance) return;

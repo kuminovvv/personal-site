@@ -95,3 +95,87 @@ nginx -t && systemctl reload nginx
 Документация: [gzip](https://nginx.org/en/docs/http/ngx_http_gzip_module.html),
 [expires и заголовки](https://nginx.org/en/docs/http/ngx_http_headers_module.html),
 [ngx_brotli](https://github.com/google/ngx_brotli).
+
+## Предварительное сжатие — 29.10.2026
+
+На том же сервере для текущего `v2.0.3` добавлена предварительная генерация
+gzip level 9 и Brotli quality 9. Пакет `brotli` установлен из репозитория Ubuntu.
+Оригинальные файлы, тег, ссылка `current` и настройки Nginx не менялись.
+В каталог релиза добавлены сжатые копии и `.precompression-state.json`.
+
+| Файл репозитория | Установлен на сервере |
+| --- | --- |
+| `ops/nginx/precompress-release.py` | `/usr/local/libexec/personal-site/precompress-release.py` |
+| `ops/nginx/personal-site-deploy-precompression.conf` | `/etc/systemd/system/personal-site-deploy.service.d/20-precompression.conf` |
+
+`ExecStartPost` принадлежит **personal-site-deploy.service**, а не Nginx.
+Он выполняется после работы существующего deployer, в том числе из timer,
+под пользователем `site-deploy` и в его прежнем sandbox. Ошибка обработки
+попадает в журнал, но не отменяет здоровый релиз: остаётся динамическое сжатие.
+Nginx автоматически использует готовые sidecar-файлы через уже включённые
+`gzip_static` и `brotli_static`; reload не требуется.
+
+Скрипт обрабатывает только текстовые расширения размером от 1024 байт,
+проверяет распакованные данные и атомарно публикует `.gz`/`.br`.
+Повторные запуски сверяют SHA-256 исходника и sidecar с
+`.precompression-state.json`; совпадения mtime недостаточно.
+`current` должен указывать внутрь реального каталога `releases/`.
+
+Созданы 498 sidecar-файлов для 249 исходников; SHA-256 всех 318 оригинальных
+файлов остались прежними. Пять unit-тестов прошли локально и на сервере.
+Реальный Brotli проверен отдельно. Автоматический timer-запуск успешно
+выполнил post-hook без повторного сжатия неизменившихся файлов.
+
+| Ресурс | Динамический Brotli до | Готовый Brotli после |
+| --- | ---: | ---: |
+| `/ru/` | 14 355 Б | 13 665 Б |
+| `/en/` | 13 419 Б | 13 086 Б |
+| Крупный JS | 67 849 Б | 66 306 Б |
+| Основной CSS | 18 330 Б | 17 689 Б |
+| Постер Soobota | 20 434 Б | 20 188 Б |
+
+Это уменьшение передаваемых байтов и работы сжатия на origin, а не обещание
+такого же ускорения полной загрузки. Origin и до изменения отвечал быстро;
+существенная часть внешней задержки приходится на сетевой маршрут и TLS.
+
+Backup и отчёты: `/root/personal-site-perf-20261029-m242chus/`.
+`baseline.json` и `after.json` содержат размеры, время и SHA-256 ответов
+identity/gzip/br; `original-sha256.json` — контрольные суммы оригиналов.
+
+Для отключения автоматической обработки перенесите drop-in в backup,
+затем выполните `systemctl daemon-reload`. Сжатые копии можно оставить:
+оригинальные файлы и работа сайта от hook не зависят.
+
+## Cloudflare и дальнейшая публикация
+
+На момент этой проверки DNS возвращал origin `178.212.15.69`, публичные
+ответы не содержали `CF-Ray`/`CF-Cache-Status`. NS уже принадлежали Cloudflare,
+но прохождение HTTP через CDN фактически не подтверждено.
+Настройки аккаунта не изменялись: инструмент доступа к встроенному браузеру
+возвращал `Local browser use is disabled in Work settings`.
+
+При настройке CDN сохраняйте origin cache headers. Для HTML и Next.js `.txt`
+payload не включайте Cache Everything, Edge TTL override, SWR или Always Online.
+Для `/_next/static/` допустим длительный кеш успешных ответов; 404 не кешируйте.
+Browser TTL — Respect Existing Headers. Rocket Loader для готового Next.js
+bundle не требуется.
+
+### Сохранение старых чанков — проверка 30.10.2026
+
+Сохранение старых хешированных файлов уже добавлено в репозиторий и на сервер:
+
+| Файл репозитория | Установлен на сервере |
+| --- | --- |
+| `ops/nginx/preserve-static-assets.py` | `/usr/local/libexec/personal-site/preserve-static-assets.py` |
+| `ops/nginx/personal-site-preserve-static.conf` | `/etc/systemd/system/personal-site-deploy.service.d/30-preserve-static.conf` |
+
+Этот post-hook выполняется после предварительного сжатия и атомарно копирует
+отсутствующие файлы `/_next/static/` из сохранённых релизов в текущий,
+не заменяя существующие файлы. При проверке текущего `v2.0.4` все 193
+исторических файла доступны по прежним путям; несовпадений содержимого
+при одинаковых путях нет. Проверены 242 gzip- и 242 Brotli-копии:
+распакованные данные совпадают с оригиналами, ошибок нет.
+
+Публикация коммитов в `master` не запускает release workflow: для него
+требуется отдельный тег `v*`. Установка файлов из `ops/nginx/` остаётся
+отдельной серверной операцией.

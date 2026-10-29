@@ -1,12 +1,12 @@
 import type { SiteContent } from "@/shared/lib/content/get-site-content";
+import type { Locale } from "@/shared/lib/i18n/locale";
+import { localizeHref } from "@/shared/lib/i18n/locale";
 import { ResumeHero } from "./resume-hero";
 import { ResumeHighlights } from "./resume-highlights";
 import { ResumeCareer } from "./resume-career";
 import { ResumeExpertise } from "./resume-expertise";
 import { ResumeApproach } from "./resume-approach";
 import { ResumeContactBanner } from "./resume-contact-banner";
-import type { Locale } from "@/shared/lib/i18n/locale";
-import { localizeHref } from "@/shared/lib/i18n/locale";
 
 type ResumePageProps = {
   experience: SiteContent["home"]["experience"];
@@ -15,7 +15,11 @@ type ResumePageProps = {
 };
 
 export const ResumePage = (props: ResumePageProps) => {
-  const { experience, channels, locale = "ru" } = props;
+  const {
+    experience,
+    channels,
+    locale = "ru",
+  } = props;
   const telegram = channels.find((channel) => channel.kind === "TELEGRAM");
   const email = channels.find((channel) => channel.kind === "EMAIL");
 

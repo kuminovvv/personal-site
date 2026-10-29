@@ -1,9 +1,9 @@
+import type { Locale } from "@/shared/lib/i18n/locale";
 import type { ContactChannel } from "../model/types";
 import { ContactsCallToAction } from "./contacts-call-to-action";
 import { ContactsDirections } from "./contacts-directions";
 import { ContactsHero } from "./contacts-hero";
 import { ContactsMethods } from "./contacts-methods";
-import type { Locale } from "@/shared/lib/i18n/locale";
 
 type Props = {
   channels: ContactChannel[];
@@ -11,7 +11,10 @@ type Props = {
 };
 
 export const ContactsPageContent = (props: Props) => {
-  const { channels, locale = "ru" } = props;
+  const {
+    channels,
+    locale = "ru",
+  } = props;
   const telegram = channels.find((channel) => channel.kind === "TELEGRAM");
   const email = channels.find((channel) => channel.kind === "EMAIL");
 

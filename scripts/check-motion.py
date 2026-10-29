@@ -125,7 +125,8 @@ def desktop(page, url):
         page.wait_for_timeout(45)
         assert dialog.count() == 1, "Exit must keep the dialog mounted"
         wait_closed(page)
-        assert cards.nth(index).evaluate("e=>document.activeElement===e")
+        expect(cards.nth(index)).to_be_focused()
+        page.evaluate("() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))")
         after = page.evaluate("({y:scrollY,x:document.querySelector('[data-gallery-rail]').scrollLeft})")
         assert abs(before["y"]-after["y"]) <= 1 and abs(before["x"]-after["x"]) <= 1, (before, after)
     print("PASS: five white viewport modals, vertically centered content, cursor-replacing cross in all margins, focus and scroll lock")
@@ -151,7 +152,10 @@ def desktop(page, url):
         if mode == "escape":
             page.keyboard.press("Escape")
         elif mode == "button":
-            page.get_by_role("button", name="Закрыть описание проекта").click()
+            close_control = page.get_by_role("button", name="Закрыть описание проекта")
+            close_control.focus()
+            expect(close_control).to_be_focused()
+            close_control.press("Enter")
         else:
             page.mouse.click(2, 2)
         wait_closed(page)
@@ -322,7 +326,8 @@ def alternatives(browser, url):
     page.locator("[data-gallery-card]").first.click()
     expect(page.locator("dialog[open]")).to_be_visible()
     assert page.locator("dialog").evaluate("e=>e.getAnimations().every(a=>a.effect.getTiming().duration===0)")
-    page.get_by_role("button", name="Закрыть описание проекта").click()
+    assert page.locator("[data-project-dialog-content] button").count() == 0
+    page.touchscreen.tap(2, 2)
     wait_closed(page)
     page.locator(ART).scroll_into_view_if_needed()
     page.wait_for_timeout(150)

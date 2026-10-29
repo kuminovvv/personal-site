@@ -33,7 +33,7 @@ def check(browser, url):
     card = page.locator("[data-gallery-card]").first
     card.hover()
     page.wait_for_timeout(450)
-    assert float(card.locator("img").evaluate("e=>getComputedStyle(e).scale")) > 1.02
+    expect(card.locator("img")).to_have_attribute("src", "/design/visual-portfolio/soobota.svg#animate")
     card.click()
     expect(page.locator("dialog[open]")).to_be_visible()
     assert page.locator("dialog").evaluate("e=>e.getAnimations().some(a=>a.effect.getTiming().duration===300)")
@@ -62,7 +62,7 @@ def check(browser, url):
     expect(page.locator("html")).to_have_attribute("data-site-motion", "off")
     card.hover()
     page.wait_for_timeout(450)
-    assert card.locator("img").evaluate("e=>getComputedStyle(e).scale") == "none"
+    expect(card.locator("img")).to_have_attribute("src", "/design/visual-portfolio/soobota.svg")
     card.click()
     expect(page.locator("dialog[open]")).to_be_visible()
     assert page.locator("dialog").evaluate("e=>e.getAnimations().every(a=>a.effect.getTiming().duration===0)")

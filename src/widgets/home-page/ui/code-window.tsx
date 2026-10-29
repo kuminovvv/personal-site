@@ -1,13 +1,14 @@
+import { homeAssetPath } from "../model/assets";
 import Image from "next/image";
 
-const asset = "/design/home/";
+
 
 export const CodeWindow = () => {
   return (
-    <div className="mt-7.5 h-58.75 rounded-[18px] bg-[#22272b] p-4.25 [&_code]:mt-4.5 [&_code]:grid [&_code]:gap-2.75 [&_code]:whitespace-nowrap [&_code]:text-[12px] [&_code_span]:text-[#b5bbb7] [&_code_em]:not-italic [&_code_em]:text-site-green">
-      <div className="flex items-center justify-between text-[11px] text-[#b5bbb7]">
+    <div className="mt-7.5 h-58.75 rounded-[18px] bg-site-contact-surface p-4.25 [&_code]:mt-4.5 [&_code]:grid [&_code]:gap-2.75 [&_code]:whitespace-nowrap [&_code]:text-[12px] [&_code_span]:text-site-contact-text [&_code_em]:not-italic [&_code_em]:text-site-green">
+      <div className="flex items-center justify-between text-[11px] text-site-contact-text">
         <Image
-          src={asset + "stack-core-detail.svg"}
+          src={homeAssetPath + "stack-core-detail.svg"}
           alt=""
           width={65}
           height={12}

@@ -1,6 +1,5 @@
-import Link from "next/link";
-import { ArrowUpRight01StrokeRoundedIcon } from "@/shared/lib/icons";
 import { LinkButton } from "@/shared/ui/link-button";
+import { InnerPageBreadcrumb } from "./inner-page-breadcrumb";
 
 type InnerPageHeroProps = {
   section: string;
@@ -13,25 +12,21 @@ type InnerPageHeroProps = {
   nextLabel: string;
 };
 
-export const InnerPageHero = ({
-  section,
-  title,
-  description,
-  detail,
-  number,
-  numberLabel,
-  nextHref,
-  nextLabel,
-}: InnerPageHeroProps) => {
+export const InnerPageHero = (props: InnerPageHeroProps) => {
+  const {
+    section,
+    title,
+    description,
+    detail,
+    number,
+    numberLabel,
+    nextHref,
+    nextLabel,
+  } = props;
   return (
     <section className="mt-15 grid grid-cols-[minmax(0,1.65fr)_minmax(280px,.85fr)] gap-5 max-[900px]:mt-10 max-[900px]:grid-cols-[1fr_.75fr] max-[680px]:mt-8 max-[680px]:grid-cols-1 max-[680px]:gap-3" aria-labelledby="page-title">
       <div className="flex min-h-98.75 min-w-0 flex-col justify-between rounded-[30px] bg-site-surface p-10.5 max-[900px]:min-h-85 max-[900px]:p-7">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <span className="text-[12px] font-semibold tracking-[.04em] text-site-subtle">{section}</span>
-          <Link className="inline-flex items-center gap-1.5 text-[13px] text-site-text hover:text-site-green-text dark:hover:text-site-green [&_svg]:stroke-current" href="/">
-            На главную <ArrowUpRight01StrokeRoundedIcon aria-hidden="true" size={18} />
-          </Link>
-        </div>
+        <InnerPageBreadcrumb section={section} />
         <div>
           <h1 className="max-w-200 text-[clamp(36px,4.5vw,64px)] leading-[1.12] max-[680px]:text-[clamp(33px,8vw,48px)]" id="page-title">{title}</h1>
           <p className="mt-5 max-w-157.5 text-[19px] leading-[1.45] text-site-muted max-[900px]:text-[16px]">{description}</p>

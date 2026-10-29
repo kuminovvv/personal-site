@@ -5,6 +5,8 @@ import { isMotionReduced, subscribeMotionPreference } from "@/shared/lib/motion/
 type OrbitLayer = { element: SVGElement; depth: number };
 type OrbitState = { x: number; y: number; targetX: number; targetY: number; time: number };
 
+const isSvgElement = (element: Element | null): element is SVGElement => element?.namespaceURI === "http://www.w3.org/2000/svg";
+
 const LAYER_DEPTHS: Record<string, number> = {
   Vector_4: 0.25,
   Vector_5: 0.4,
@@ -25,7 +27,7 @@ export const useOrbitInteraction = () => {
   const layersRef = useRef<OrbitLayer[]>([]);
   const stateRef = useRef<OrbitState>({ x: 0, y: 0, targetX: 0, targetY: 0, time: 0 });
   const frameRef = useRef<number | null>(null);
-  const enabledRef = useRef(false);
+  const isEnabledRef = useRef(false);
 
   const clearFrame = () => {
     if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
@@ -58,7 +60,7 @@ export const useOrbitInteraction = () => {
   const reset = () => {
     stateRef.current.targetX = 0;
     stateRef.current.targetY = 0;
-    if (enabledRef.current && !getReducedMotion()) {
+    if (isEnabledRef.current && !getReducedMotion()) {
       if (frameRef.current === null) {
         stateRef.current.time = performance.now();
         render();
@@ -76,12 +78,12 @@ export const useOrbitInteraction = () => {
     if (!document) return;
     layersRef.current = Object.entries(LAYER_DEPTHS).flatMap(([id, depth]) => {
       const element = document.getElementById(id);
-      return element?.namespaceURI === "http://www.w3.org/2000/svg" ? [{ element: element as unknown as SVGElement, depth }] : [];
+      return isSvgElement(element) ? [{ element, depth }] : [];
     });
   };
 
   const onPointerMove = (event: MouseEvent<HTMLDivElement>) => {
-    if (!enabledRef.current || getReducedMotion()) return;
+    if (!isEnabledRef.current || getReducedMotion()) return;
     if (!layersRef.current.length) onLoad();
     const bounds = event.currentTarget.getBoundingClientRect();
     stateRef.current.targetX = ((event.clientX - bounds.left) / bounds.width - 0.5) * 16;
@@ -95,8 +97,8 @@ export const useOrbitInteraction = () => {
   useEffect(() => {
     const query = window.matchMedia("(hover: hover) and (pointer: fine) and (min-width: 769px)");
     const updateEnabled = () => {
-      enabledRef.current = query.matches && !isMotionReduced();
-      if (!enabledRef.current) {
+      isEnabledRef.current = query.matches && !isMotionReduced();
+      if (!isEnabledRef.current) {
         stateRef.current.x = 0;
         stateRef.current.y = 0;
         stateRef.current.targetX = 0;

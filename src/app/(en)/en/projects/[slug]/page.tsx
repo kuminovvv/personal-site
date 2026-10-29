@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { projectCases, getProjectCase } from "@/shared/config/project-cases";
 import { createPageMetadata, getMetadataCopy } from "@/shared/lib/i18n/metadata";
-import { ProjectCasePage } from "@/widgets/project-case/ui/project-case-page";
+import { ProjectCasePage } from "@/widgets/project-case";
 
 type PageProps = { params: Promise<{ slug: string }> };
 export const dynamicParams = false;
@@ -14,7 +14,11 @@ export const generateMetadata = async ({ params }: PageProps): Promise<Metadata>
   return createPageMetadata("en", `/projects/${project.slug}`, `${project.title} — ${getMetadataCopy("en").caseTitle}`, project.description);
 };
 
-const ProjectPage = async ({ params }: PageProps) => {
+const ProjectPage = async (props: PageProps) => {
+  const {
+    params,
+  } = props;
+
   const project = getProjectCase((await params).slug, "en");
   if (!project) notFound();
   return <ProjectCasePage locale="en" project={project} />;

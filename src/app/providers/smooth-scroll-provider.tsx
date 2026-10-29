@@ -1,21 +1,18 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { getHashTarget } from "@/shared/lib/get-hash-target";
+import type { ReactNode } from "react";
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { isMotionReduced } from "@/shared/lib/motion/preference";
 
-const getHashTarget = (hash: string) => {
-  if (!hash || hash === "#") return null;
-  try {
-    return document.getElementById(decodeURIComponent(hash.slice(1)));
-  } catch {
-    return null;
-  }
-};
 
-export const SmoothScrollProvider = ({
-  children,
-}: Readonly<{ children: React.ReactNode }>) => {
+
+export const SmoothScrollProvider = (props: Readonly<{ children: ReactNode }>) => {
+  const {
+    children,
+  } = props;
+
   const pathname = usePathname();
 
   useEffect(() => {

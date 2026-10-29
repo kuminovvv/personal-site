@@ -1,8 +1,14 @@
-import { getResumeApproach, resumeApproach } from "../model/resume-content";
 import type { Locale } from "@/shared/lib/i18n/locale";
+import { ResumeApproachItem } from "./resume-approach-item";
+import { getResumeApproach, resumeApproach } from "../model/resume-content";
 import { getResumeUiCopy } from "../model/ui-copy";
 
-export const ResumeApproach = ({ locale = "ru" }: { locale?: Locale }) => {
+type ResumeApproachProps = { locale?: Locale };
+
+export const ResumeApproach = (props: ResumeApproachProps) => {
+  const {
+    locale = "ru",
+  } = props;
   const items = locale === "en" ? getResumeApproach(locale) : resumeApproach;
   const copy = getResumeUiCopy(locale);
   return (
@@ -13,13 +19,7 @@ export const ResumeApproach = ({ locale = "ru" }: { locale?: Locale }) => {
     </div>
     <div className="grid min-h-45 gap-4 rounded-[20px] bg-site-surface px-8 py-7 max-[680px]:px-6 max-[680px]:py-6">
       {items.map((item, index) => (
-        <div className="grid grid-cols-[95px_minmax(0,1fr)] items-start gap-5 max-[480px]:grid-cols-1 max-[480px]:gap-1.5" key={item.title}>
-          <span className="text-[12px] font-semibold text-site-green-text dark:text-site-green">0{index + 1} / {copy.principle}</span>
-          <div>
-            <h3 className="text-[15px] font-semibold">{item.title}</h3>
-            <p className="mt-1.5 text-[13px] leading-[1.5] text-site-subtle">{item.description}</p>
-          </div>
-        </div>
+        <ResumeApproachItem key={item.title} item={item} index={index} principle={copy.principle} />
       ))}
     </div>
   </section>

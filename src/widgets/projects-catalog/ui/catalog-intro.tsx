@@ -1,6 +1,12 @@
 import type { SiteContent } from "@/shared/lib/content/get-site-content";
 
-export const CatalogIntro = ({ content }: { content: SiteContent["catalog"]["intro"] }) => (
+type CatalogIntroProps = { content: SiteContent["catalog"]["intro"] };
+
+export const CatalogIntro = (props: CatalogIntroProps) => {
+  const {
+    content,
+  } = props;
+  return (
   <div className="grid min-h-31 grid-cols-[minmax(0,1fr)_276px] items-center gap-13.5 max-[1180px]:grid-cols-[minmax(0,1fr)_240px] max-[1180px]:gap-6 max-[900px]:grid-cols-[minmax(0,1fr)_200px] max-[680px]:grid-cols-1 max-[680px]:gap-5">
     <div className="min-w-0">
       <span className="block text-[12px] leading-none font-semibold text-site-green-text dark:text-site-green">{content.eyebrow}</span>
@@ -13,4 +19,5 @@ export const CatalogIntro = ({ content }: { content: SiteContent["catalog"]["int
       <p className="text-[14px] text-site-subtle">{content.counterNote}</p>
     </div>
   </div>
-);
+  );
+};

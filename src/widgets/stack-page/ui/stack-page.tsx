@@ -1,3 +1,4 @@
+import type { Locale } from "@/shared/lib/i18n/locale";
 import { StackIntro } from "./stack-intro";
 import { StackPrimaryCard } from "./stack-primary-card";
 import { StackCapabilityCard } from "./stack-capability-card";
@@ -5,10 +6,14 @@ import { StackProjectExample } from "./stack-project-example";
 import { StackSectionHeading } from "./stack-section-heading";
 import { StackActionBanner } from "./stack-action-banner";
 import { getStackContent } from "../model/stack-content";
-import type { Locale } from "@/shared/lib/i18n/locale";
 import { getStackUiCopy } from "../model/ui-copy";
 
-export const StackPage = ({ locale = "ru" }: { locale?: Locale }) => {
+type StackPageProps = { locale?: Locale };
+
+export const StackPage = (props: StackPageProps) => {
+  const {
+    locale = "ru",
+  } = props;
   const stackContent = getStackContent(locale);
   const copy = getStackUiCopy(locale);
   return (

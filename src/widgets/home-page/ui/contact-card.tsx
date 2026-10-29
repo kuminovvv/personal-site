@@ -11,23 +11,25 @@ type ContactCardProps = {
   title: string;
   description: string;
   action: string;
-  external?: boolean;
+  hasExternalTarget?: boolean;
 };
 
-export const ContactCard = ({
-  href,
-  kind,
-  number,
-  title,
-  description,
-  action,
-  external = false,
-}: ContactCardProps) => (
+export const ContactCard = (props: ContactCardProps) => {
+  const {
+    href,
+    kind,
+    number,
+    title,
+    description,
+    action,
+    hasExternalTarget = false,
+  } = props;
+  return ((
   <a
     className="flex min-w-0 flex-col items-start rounded-[30px] bg-site-surface p-10 max-[1180px]:p-8 max-[400px]:p-6"
     href={href}
-    target={external ? "_blank" : undefined}
-    rel={external ? "noopener noreferrer" : undefined}
+    target={hasExternalTarget ? "_blank" : undefined}
+    rel={hasExternalTarget ? "noopener noreferrer" : undefined}
   >
     <span className="flex w-full items-center justify-between text-[12px] text-site-subtle [&_i]:grid [&_i]:size-10.5 [&_i]:place-items-center [&_i]:rounded-full [&_i]:bg-site-soft [&_i]:not-italic">
       <b className="inline-flex items-center gap-2">
@@ -47,4 +49,5 @@ export const ContactCard = ({
       <ArrowRight02StrokeRoundedIcon aria-hidden="true" size={18} />
     </strong>
   </a>
-);
+));
+};

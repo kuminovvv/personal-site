@@ -1,6 +1,6 @@
 import { getSiteContent } from "@/shared/lib/content/get-site-content";
 import { getPageMetadata } from "@/shared/lib/i18n/metadata";
-import { ContactsPageContent } from "@/widgets/contacts-page/ui/contacts-page-content";
+import { ContactsPageContent } from "@/widgets/contacts-page";
 
 export const metadata = getPageMetadata("contacts", "en");
 

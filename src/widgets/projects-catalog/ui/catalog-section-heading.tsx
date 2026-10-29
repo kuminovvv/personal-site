@@ -4,7 +4,13 @@ type CatalogSectionHeadingProps = {
   className?: string;
 };
 
-export const CatalogSectionHeading = ({ title, meta, className = "" }: CatalogSectionHeadingProps) => (
+export const CatalogSectionHeading = (props: CatalogSectionHeadingProps) => {
+  const {
+    title,
+    meta,
+    className = "",
+  } = props;
+  return (
   <div className={`flex min-h-16.5 items-center justify-between gap-4 rounded-full bg-site-surface p-4 max-[680px]:items-start max-[680px]:rounded-site-24 max-[400px]:flex-wrap max-[400px]:gap-2 ${className}`}>
     <div className="flex items-center gap-3">
       <span aria-hidden="true" className="size-2.5 shrink-0 rounded-full bg-site-green" />
@@ -12,4 +18,5 @@ export const CatalogSectionHeading = ({ title, meta, className = "" }: CatalogSe
     </div>
     <span className="text-[12px] text-site-subtle whitespace-nowrap max-[680px]:text-[10px]">{meta}</span>
   </div>
-);
+  );
+};

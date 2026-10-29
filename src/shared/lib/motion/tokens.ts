@@ -9,7 +9,7 @@ export const motionTokens = {
   gallery: { decay: 220, snapDistance: 64, velocityLimit: 2.5 },
 } as const;
 
-export const motionStyle = {
+export const motionStyle: CSSProperties & Record<`--${string}`, string> = {
   "--motion-quick": `${motionTokens.duration.quick}ms`,
   "--motion-hover": `${motionTokens.duration.hover}ms`,
   "--motion-reveal": `${motionTokens.duration.reveal}ms`,
@@ -22,4 +22,4 @@ export const motionStyle = {
   "--motion-exit": `${motionTokens.duration.exit}ms`,
   "--motion-out": motionTokens.easing.out,
   "--motion-standard": motionTokens.easing.standard,
-} as CSSProperties;
+};

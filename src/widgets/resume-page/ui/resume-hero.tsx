@@ -6,7 +6,10 @@ import { getResumeUiCopy } from "../model/ui-copy";
 type ResumeHeroProps = { telegramHref: string; locale?: Locale };
 
 export const ResumeHero = (props: ResumeHeroProps) => {
-  const { telegramHref, locale = "ru" } = props;
+  const {
+    telegramHref,
+    locale = "ru",
+  } = props;
   const copy = getResumeUiCopy(locale);
 
   return (

@@ -1,4 +1,4 @@
-import { HomePage } from "@/widgets/home-page/ui/home-page";
+import { HomePage } from "@/widgets/visual-portfolio";
 import { getPageMetadata } from "@/shared/lib/i18n/metadata";
 
 export const metadata = getPageMetadata("home", "en");

@@ -1,8 +1,8 @@
-"use client";
-
 import { useEffect, useRef } from "react";
-import { revealFrames, revealOptions, type RevealKind } from "@/shared/lib/motion/reveal";
+import { revealFrames, revealOptions } from "@/shared/lib/motion/reveal";
 import { isMotionReduced, subscribeMotionPreference } from "@/shared/lib/motion/preference";
+
+import {isRevealKind} from "../model/portfolio-motion";
 
 // Content is visible in the server HTML. Only an active animation changes it.
 export const PortfolioMotion = () => {
@@ -45,7 +45,8 @@ export const PortfolioMotion = () => {
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(({ target, isIntersecting, boundingClientRect }) => {
-        const element = target as HTMLElement;
+        if (!(target instanceof HTMLElement)) return;
+        const element = target;
         if (!isIntersecting || completed.has(element)) return;
         observer.unobserve(element);
         // A restored scroll position should never replay elements above it.
@@ -54,7 +55,9 @@ export const PortfolioMotion = () => {
           reveal(element);
           return;
         }
-        play(element, revealFrames(element.dataset.motion as RevealKind), revealOptions(element));
+        const kind = element.dataset.motion;
+        if (!isRevealKind(kind)) return;
+        play(element, revealFrames(kind), revealOptions(element));
       });
     }, { threshold: 0.08, rootMargin: "0px 0px -24px 0px" });
 

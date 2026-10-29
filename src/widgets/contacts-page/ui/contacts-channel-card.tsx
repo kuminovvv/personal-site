@@ -9,7 +9,12 @@ type Props = {
 };
 
 export const ContactsChannelCard = (props: Props) => {
-  const { channel, label, description, action } = props;
+  const {
+    channel,
+    label,
+    description,
+    action,
+  } = props;
 
   return (
     <section className="flex min-w-0 flex-1 flex-col items-start gap-3 rounded-[26px] bg-site-surface px-8 py-7 max-[680px]:rounded-[22px] max-[680px]:p-6">

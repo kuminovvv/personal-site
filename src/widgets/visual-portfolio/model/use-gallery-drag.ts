@@ -1,5 +1,3 @@
-"use client";
-
 import { isMotionReduced, subscribeMotionPreference } from "@/shared/lib/motion/preference";
 
 import { useEffect, useRef, type MouseEvent, type PointerEvent } from "react";
@@ -9,7 +7,7 @@ type DragOrigin = {
   pointerId: number;
   x: number;
   scrollLeft: number;
-  moved: boolean;
+  hasMoved: boolean;
   lastX: number;
   lastTime: number;
   velocity: number;
@@ -21,12 +19,12 @@ export const useGalleryDrag = () => {
   const originRef = useRef<DragOrigin | null>(null);
   const frameRef = useRef<number | null>(null);
   const suppressClickRef = useRef(false);
-  const activityRef = useRef({ pressed: false, inertia: false });
+  const activityRef = useRef({ isPressed: false, hasInertia: false });
 
   const stopAnimation = () => {
     if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
     frameRef.current = null;
-    activityRef.current.inertia = false;
+    activityRef.current.hasInertia = false;
     const element = scrollRef.current;
     element?.scrollTo({ left: element.scrollLeft, behavior: "instant" });
   };
@@ -36,7 +34,7 @@ export const useGalleryDrag = () => {
       if (!isMotionReduced()) return;
       if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
       frameRef.current = null;
-      activityRef.current.inertia = false;
+      activityRef.current.hasInertia = false;
       const element = scrollRef.current;
       element?.scrollTo({ left: element.scrollLeft, behavior: "instant" });
     });
@@ -49,8 +47,8 @@ export const useGalleryDrag = () => {
   const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
     stopAnimation();
     if (event.pointerType !== "mouse" || event.button !== 0 || !event.isPrimary) return;
-    activityRef.current.pressed = true;
-    activityRef.current.inertia = false;
+    activityRef.current.isPressed = true;
+    activityRef.current.hasInertia = false;
     const element = event.currentTarget;
     element.scrollTo({ left: element.scrollLeft, behavior: "instant" });
     suppressClickRef.current = false;
@@ -58,7 +56,7 @@ export const useGalleryDrag = () => {
       pointerId: event.pointerId,
       x: event.clientX,
       scrollLeft: element.scrollLeft,
-      moved: false,
+      hasMoved: false,
       lastX: event.clientX,
       lastTime: event.timeStamp,
       velocity: 0,
@@ -69,10 +67,10 @@ export const useGalleryDrag = () => {
   const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
     const origin = originRef.current;
     if (!origin || origin.pointerId !== event.pointerId || !(event.buttons & 1)) return;
-    if (!origin.moved && Math.abs(event.clientX - origin.x) < 6) return;
+    if (!origin.hasMoved && Math.abs(event.clientX - origin.x) < 6) return;
     const element = event.currentTarget;
-    if (!origin.moved) {
-      origin.moved = true;
+    if (!origin.hasMoved) {
+      origin.hasMoved = true;
       suppressClickRef.current = true;
       element.setPointerCapture(event.pointerId);
       element.dataset.dragging = "true";
@@ -96,16 +94,16 @@ export const useGalleryDrag = () => {
     if (!origin || origin.pointerId !== event.pointerId) return;
     const element = event.currentTarget;
     originRef.current = null;
-    activityRef.current.pressed = false;
+    activityRef.current.isPressed = false;
     stopAnimation();
     delete element.dataset.dragging;
     if (element.hasPointerCapture(event.pointerId)) element.releasePointerCapture(event.pointerId);
-    if (!origin.moved) return;
+    if (!origin.hasMoved) return;
     element.scrollLeft = origin.target;
     if (event.type !== "pointerup" || event.timeStamp - origin.lastTime > 80 || isMotionReduced()) return;
 
     let velocity = origin.velocity;
-    activityRef.current.inertia = true;
+    activityRef.current.hasInertia = true;
     let position = element.scrollLeft;
     let previousTime = performance.now();
     const animate = (time: number) => {
@@ -119,7 +117,7 @@ export const useGalleryDrag = () => {
       element.scrollLeft = position;
       if (Math.abs(velocity) < 0.02 || position === 0 || position === maximum) {
         frameRef.current = null;
-        activityRef.current.inertia = false;
+        activityRef.current.hasInertia = false;
         return;
       }
       frameRef.current = requestAnimationFrame(animate);
@@ -135,9 +133,9 @@ export const useGalleryDrag = () => {
   };
 
   const onPointerLeave = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType === "mouse" && !originRef.current?.moved) {
+    if (event.pointerType === "mouse" && !originRef.current?.hasMoved) {
       originRef.current = null;
-      activityRef.current.pressed = false;
+      activityRef.current.isPressed = false;
     }
   };
 

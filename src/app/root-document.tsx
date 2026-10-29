@@ -1,30 +1,31 @@
+import { robotoFlex, unbounded, onest, golos, geistMono } from "./config/fonts";
 import type { ReactNode } from "react";
 import type { Locale } from "@/shared/lib/i18n/locale";
-import { Roboto_Flex, Unbounded, Onest, Golos_Text, Geist_Mono } from "next/font/google";
-import { SmoothScrollProvider } from "./providers/smooth-scroll-provider";
-import { SiteLayout } from "@/widgets/site-layout/ui/site-layout";
+import { SiteLayout } from "@/widgets/site-layout";
+import { SiteHeader } from "@/widgets/site-header";
+import { SiteFooter } from "@/widgets/site-footer";
+import { getSiteContent } from "@/shared/lib/content/get-site-content";
 import { localeBootstrapScript } from "@/shared/lib/i18n/locale-bootstrap-script";
 import { introBootstrapScript } from "@/shared/lib/motion/intro-bootstrap-script";
+import { SmoothScrollProvider } from "./providers/smooth-scroll-provider";
 import "./globals.css";
 
-const robotoFlex = Roboto_Flex({
-  subsets: ["latin", "cyrillic"],
-  variable: "--font-roboto-flex",
-  display: "swap",
-  preload: false,
-});
 
-const unbounded = Unbounded({
-  subsets: ["latin", "cyrillic"],
-  variable: "--font-unbounded",
-  display: "swap",
-  preload: false,
-});
-const onest = Onest({ subsets: ["latin", "cyrillic"], variable: "--font-visual-display", display: "swap", weight: "variable" });
-const golos = Golos_Text({ subsets: ["latin", "cyrillic"], variable: "--font-visual-text", display: "swap" });
-const geistMono = Geist_Mono({ subsets: ["latin", "cyrillic"], variable: "--font-visual-mono", display: "swap", preload: false });
 
-const RootDocument = ({ children, locale }: Readonly<{ children: ReactNode; locale: Locale }>) => {
+
+
+
+
+
+export const RootDocument = async (props: Readonly<{ children: ReactNode; locale: Locale }>) => {
+  const {
+    children,
+    locale,
+  } = props;
+  const content = await getSiteContent(locale);
+  const header = <SiteHeader locale={locale} />;
+  const footer = <SiteFooter locale={locale} content={content.footer} channels={content.home.contacts.channels} />;
+
   return (
     <html
       lang={locale}
@@ -42,11 +43,9 @@ const RootDocument = ({ children, locale }: Readonly<{ children: ReactNode; loca
       </head>
       <body className="min-h-full">
         <SmoothScrollProvider>
-          <SiteLayout locale={locale}>{children}</SiteLayout>
+          <SiteLayout header={header} footer={footer}>{children}</SiteLayout>
         </SmoothScrollProvider>
       </body>
     </html>
   );
 };
-
-export default RootDocument;

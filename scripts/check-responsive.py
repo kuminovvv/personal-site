@@ -130,6 +130,8 @@ def run() -> int:
                                     wait_until="domcontentloaded",
                                 )
                                 page.evaluate("document.fonts.ready")
+                                # Font readiness can precede the first completed layout frame.
+                                page.evaluate("() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))")
                                 problems = page.evaluate(CHECK)
                                 if response.status != 200 or problems:
                                     failures.append(

@@ -1,13 +1,17 @@
 import Link from "next/link";
-import type { stackContent } from "../model/stack-content";
 import { localizeHref, type Locale } from "@/shared/lib/i18n/locale";
+import type { stackContent } from "../model/stack-content";
 
 type Props = {
   item: (typeof stackContent.examples)[number];
   locale?: Locale;
 };
 
-export const StackProjectExample = ({ item, locale = "ru" }: Props) => {
+export const StackProjectExample = (props: Props) => {
+  const {
+    item,
+    locale = "ru",
+  } = props;
   const content = (
     <>
       <p className="text-[10px] leading-none font-semibold text-site-green-text dark:text-site-green">{item.category}</p>

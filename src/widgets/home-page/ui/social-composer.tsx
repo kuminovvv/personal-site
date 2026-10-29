@@ -1,0 +1,1 @@
+export const SocialComposer = () => <div className="flex items-center gap-2.25 rounded-lg bg-site-approach-surface px-2.5 py-2.25 text-[11px] text-site-mini-window-surface-e"><span aria-hidden="true" className="size-6.25 shrink-0 rounded-full bg-site-green" />Что нового?</div>;
