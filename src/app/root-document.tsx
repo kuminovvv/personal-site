@@ -11,14 +11,16 @@ const robotoFlex = Roboto_Flex({
   subsets: ["latin", "cyrillic"],
   variable: "--font-roboto-flex",
   display: "swap",
+  preload: false,
 });
 
 const unbounded = Unbounded({
   subsets: ["latin", "cyrillic"],
   variable: "--font-unbounded",
   display: "swap",
+  preload: false,
 });
-const onest = Onest({ subsets: ["latin", "cyrillic", "cyrillic-ext"], variable: "--font-visual-display", display: "swap", weight: "variable" });
+const onest = Onest({ subsets: ["latin", "cyrillic"], variable: "--font-visual-display", display: "swap", weight: "variable" });
 const golos = Golos_Text({ subsets: ["latin", "cyrillic"], variable: "--font-visual-text", display: "swap" });
 const geistMono = Geist_Mono({ subsets: ["latin", "cyrillic"], variable: "--font-visual-mono", display: "swap", preload: false });
 
