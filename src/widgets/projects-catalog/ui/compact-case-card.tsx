@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/compat/link";
 import { ArrowUpRight01StrokeRoundedIcon } from "@/shared/lib/icons";
 import type { SiteContent } from "@/shared/lib/content/get-site-content";
 import type { Locale } from "@/shared/lib/i18n/locale";

@@ -1,0 +1,27 @@
+---
+import SiteLayout from "@/layouts/SiteLayout.astro";
+import { ProjectCasePage } from "@/widgets/project-case";
+import { projectCases, type ProjectCase } from "@/shared/config/project-cases";
+import { createPageMetadata } from "@/shared/lib/i18n/metadata";
+
+export const getStaticPaths = () =>
+  projectCases.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+
+type Props = { project: ProjectCase };
+
+const { project } = Astro.props;
+const locale = "ru" as const;
+const meta = createPageMetadata(
+  locale,
+  `/projects/${project.slug}`,
+  `${project.title} — проекты Kuminovvv`,
+  project.description,
+);
+---
+
+<SiteLayout locale={locale} page="projects" title={meta.title} description={meta.description}>
+  <ProjectCasePage project={project} locale={locale} />
+</SiteLayout>

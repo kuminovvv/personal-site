@@ -1,0 +1,10 @@
+---
+import SiteLayout from "@/layouts/SiteLayout.astro";
+import { ContactsPageContent } from "@/widgets/contacts-page";
+import { getSiteContent } from "@/shared/lib/content/get-site-content";
+const content = getSiteContent("ru");
+---
+
+<SiteLayout locale="ru" page="contacts">
+  <ContactsPageContent channels={content.home.contacts.channels} locale="ru" />
+</SiteLayout>
