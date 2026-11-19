@@ -14,16 +14,8 @@ fi
 repo="$(cd "$(dirname "$0")/../.." && pwd)"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get install -y debian-keyring debian-archive-keyring apt-transport-https curl gnupg ca-certificates python3 brotli
+apt-get install -y caddy python3 curl brotli ca-certificates
 python3 -c 'import sys; assert sys.version_info >= (3, 9), "Python 3.9+ required"'
-
-# Official stable Caddy repository: https://caddyserver.com/docs/install
-curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' |
-    gpg --batch --yes --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' +    -o /etc/apt/sources.list.d/caddy-stable.list
-chmod o+r /usr/share/keyrings/caddy-stable-archive-keyring.gpg /etc/apt/sources.list.d/caddy-stable.list
-apt-get update
-apt-get install -y caddy
 
 if ! getent group site-deploy >/dev/null; then
     groupadd --system site-deploy
