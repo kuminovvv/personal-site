@@ -13,8 +13,10 @@ fi
 
 repo="$(cd "$(dirname "$0")/../.." && pwd)"
 export DEBIAN_FRONTEND=noninteractive
-apt-get update
-apt-get install -y caddy python3 curl brotli ca-certificates
+if ! command -v caddy >/dev/null || ! command -v python3 >/dev/null || ! command -v brotli >/dev/null || ! command -v curl >/dev/null; then
+    apt-get update
+    apt-get install -y caddy python3 curl brotli ca-certificates
+fi
 python3 -c 'import sys; assert sys.version_info >= (3, 9), "Python 3.9+ required"'
 
 if ! getent group site-deploy >/dev/null; then
