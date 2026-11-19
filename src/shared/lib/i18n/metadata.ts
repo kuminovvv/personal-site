@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { createDictionary } from "./dictionary";
 import { localizeHref, type Locale } from "./locale";
 
@@ -21,7 +20,7 @@ export const getMetadataCopy = createDictionary("metadata", {
   },
 });
 
-export const createPageMetadata = (locale: Locale, path: string, title: string, description: string): Metadata => {
+export const createPageMetadata = (locale: Locale, path: string, title: string, description: string) => {
   const route = path === "/" ? path : `${path.replace(/\/+$/, "")}/`;
   const url = localizeHref(route, locale);
   const copy = getMetadataCopy(locale);

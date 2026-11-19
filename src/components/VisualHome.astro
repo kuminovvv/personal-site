@@ -1,0 +1,92 @@
+---
+import LanguageSwitcher from "@/components/LanguageSwitcher.astro";
+import { VisualHero } from "@/widgets/visual-portfolio/ui/visual-hero";
+import { ProjectGallery } from "@/widgets/visual-portfolio/ui/project-gallery";
+import { Approach } from "@/widgets/visual-portfolio/ui/approach";
+import { CreativeLabCopy } from "@/widgets/visual-portfolio/ui/creative-lab-copy";
+import { CreativeLabInteraction } from "@/widgets/visual-portfolio/ui/creative-lab-interaction";
+import { About } from "@/widgets/visual-portfolio/ui/about";
+import { ContactLead } from "@/widgets/visual-portfolio/ui/contact-lead";
+import { ContactChannels } from "@/widgets/visual-portfolio/ui/contact-channels";
+import { MotionPreferenceControl } from "@/widgets/visual-portfolio/ui/motion-preference-control";
+import { PortfolioMotion } from "@/widgets/visual-portfolio/ui/portfolio-motion";
+import { CONTACT_CHANNELS } from "@/widgets/visual-portfolio/model/contact-channels";
+import { getVisualExtraText, getVisualText } from "@/widgets/visual-portfolio/model/locale-content";
+import { ArrowRight02StrokeRoundedIcon } from "@/shared/lib/icons/arrow-right-02-stroke-rounded";
+import type { Locale } from "@/shared/lib/i18n/locale";
+
+type Props = { locale?: Locale };
+
+const { locale = "ru" } = Astro.props;
+const copy = getVisualText(locale);
+const extra = getVisualExtraText(locale);
+
+const motionStyle =
+  "--motion-quick:180ms;--motion-hover:360ms;--motion-reveal:620ms;--motion-hero:840ms;--motion-projects-intro:1500ms;--motion-hero-delay:100ms;--motion-line-delay:230ms;--motion-intro-delay:400ms;--motion-modal:300ms;--motion-exit:220ms;--motion-out:cubic-bezier(0.22,1,0.36,1);--motion-standard:cubic-bezier(0.2,0.7,0.2,1)";
+---
+
+<div
+  data-visual-home
+  class="mx-auto w-full max-w-[1520px] space-y-[136px] text-site-home-text max-[1024px]:space-y-[88px] max-[640px]:space-y-16"
+  style={motionStyle}
+>
+  <PortfolioMotion client:idle />
+
+  <nav data-motion-intro="nav" class="flex h-[58px] items-center justify-between gap-4 max-[540px]:gap-0" aria-label={extra.homeNav}>
+    <a href="#top" class="shrink-0 font-[family-name:var(--font-visual-display)] text-[25px] font-bold tracking-[-.023em] max-[540px]:text-[18px] max-[360px]:text-[15px]">kuminovvv</a>
+    <div class="flex shrink-0 items-center gap-3 font-[family-name:var(--font-visual-text)] text-[13px] font-medium max-[540px]:gap-1 max-[540px]:text-[12px]">
+      <a class="rounded-full bg-site-home-surface px-6 py-3.5 max-[540px]:px-3 max-[360px]:px-2.5" href="#projects">{copy.work}</a>
+      <a class="rounded-full bg-site-home-surface px-6 py-3.5 max-[540px]:px-3 max-[360px]:px-2.5" href="#about">{copy.about}</a>
+      <LanguageSwitcher className="rounded-full bg-site-home-surface px-3 max-[540px]:px-1 max-[360px]:px-0.5" locale={locale} />
+    </div>
+  </nav>
+
+  <VisualHero locale={locale} />
+
+  <div class="block">
+    <ProjectGallery client:load locale={locale} />
+  </div>
+
+  <Approach locale={locale} />
+
+  <section id="lab">
+    <div class="mb-[70px] flex flex-wrap justify-between gap-5 font-[family-name:var(--font-visual-mono)] leading-none text-site-creative-text">
+      <span class="text-[14px] tracking-[.004em]">{copy.lab}</span>
+      <span class="text-[13px] tracking-[.002em]">{copy.labEyebrow}</span>
+    </div>
+    <h2 data-motion="heading" class="mb-[70px] font-[family-name:var(--visual-heading-font-stack)] text-[clamp(48px,6.04vw,116px)] leading-none font-semibold tracking-[-.04em] text-site-about-text-b">
+      {copy.labTitle}
+    </h2>
+    <div data-motion="panel" class="grid min-h-[600px] grid-cols-[.75fr_1fr] gap-7 overflow-hidden rounded-[28px] bg-site-creative-surface p-8 text-site-creative-surface-b min-[1600px]:grid-cols-[590px_minmax(0,788px)] min-[1600px]:gap-[78px] max-[1050px]:grid-cols-1 max-[640px]:min-h-[540px] max-[640px]:p-5">
+      <CreativeLabCopy copy={copy} extra={extra} />
+      <CreativeLabInteraction client:visible locale={locale} />
+    </div>
+  </section>
+
+  <About locale={locale} />
+
+  <section id="contact" aria-labelledby="visual-contact-title" class="relative left-1/2 w-[calc(100%+2*var(--visual-page-inset))] -translate-x-1/2 bg-site-switch-border text-site-switch-accent-c min-[1600px]:min-h-[1292px]">
+    <div class="mx-auto flex w-full max-w-[1520px] flex-col gap-[70px] px-6 pt-[97px] pb-[65px] sm:px-10 2xl:px-0 max-[768px]:gap-12 max-[768px]:pt-16 max-[768px]:pb-9">
+      <span class="font-[family-name:var(--font-visual-mono)] text-[14px] leading-none tracking-[.0065em] text-site-contact-text-b">{copy.contactLabel}</span>
+      <h2 id="visual-contact-title" class="flex flex-col font-[family-name:var(--visual-heading-font-stack)]! leading-[.95]! font-semibold max-[768px]:gap-1">
+        <span data-motion="line" class="text-[clamp(48px,8.54vw,164px)] tracking-[-.051em] text-white">{copy.contactTitle[0]}</span>
+        <span data-motion="line" data-motion-order="1" class="-mt-[13px] text-[clamp(40px,7.71vw,148px)] tracking-[-.045em] text-site-switch-accent-b max-[768px]:mt-0">{copy.contactTitle[1]}</span>
+      </h2>
+      <div class="grid grid-cols-[minmax(0,858px)_minmax(0,554px)] items-start gap-[108px] max-[1100px]:grid-cols-1 max-[1100px]:gap-12">
+        <ContactLead copy={copy} locale={locale} />
+        <ContactChannels channels={CONTACT_CHANNELS} />
+      </div>
+      <div class="border-t border-site-switch-accent pt-[38px]">
+        <p data-motion="heading" class="font-[family-name:var(--visual-heading-font-stack)] text-[clamp(48px,11.3vw,217px)] leading-[.97] font-semibold tracking-[-.056em] text-site-switch-accent-b">kuminovvv</p>
+      </div>
+      <div class="flex flex-wrap items-center justify-between gap-6 font-[family-name:var(--font-visual-mono)] text-[13px] leading-[1.04] tracking-[.001em] text-site-contact-text-e">
+        <div class="flex flex-wrap items-center gap-5 sm:gap-[19px]"><span>© 2026</span><span>DESIGNED &amp; BUILT BY KUMINOVVV</span></div>
+        <div class="flex flex-wrap items-center gap-x-[34px] gap-y-4">
+          <MotionPreferenceControl client:idle locale={locale} />
+          <LanguageSwitcher locale={locale} />
+          <a href="#top" class="inline-flex items-center gap-[11px] text-site-contact-accent-c focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--site-switch-accent-b)]">{copy.top}<ArrowRight02StrokeRoundedIcon aria-hidden="true" size={20} className="-rotate-90" /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

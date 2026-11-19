@@ -1,0 +1,10 @@
+---
+import SiteLayout from "@/layouts/SiteLayout.astro";
+import { ProjectsCatalog } from "@/widgets/projects-catalog";
+import { getSiteContent } from "@/shared/lib/content/get-site-content";
+const content = getSiteContent("en");
+---
+
+<SiteLayout locale="en" page="projects">
+  <ProjectsCatalog content={content.catalog} locale="en" />
+</SiteLayout>

@@ -1,5 +1,4 @@
 import { ArrowRight02StrokeRoundedIcon } from "@/shared/lib/icons";
-import { Button } from "@/shared/ui/button";
 import type { Locale } from "@/shared/lib/i18n/locale";
 
 type Props = {
@@ -24,15 +23,15 @@ export const ContactsCallToAction = (props: Props) => {
           {isEnglish ? "Tell me what needs to be done. We will clarify the rest as we talk." : "Напишите, что нужно сделать. Остальное уточним по ходу разговора."}
         </p>
       </div>
-      <Button
-        nativeButton={false}
-        render={<a href={telegramHref} target="_blank" rel="noopener noreferrer" />}
-        size="lg"
-        className="min-h-14.5 shrink-0 cursor-pointer gap-2 rounded-full bg-site-green px-6 text-[15px] font-semibold text-site-contact-accent hover:bg-site-green focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-site-text max-[680px]:w-full"
+      <a
+        className="inline-flex min-h-14.5 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full bg-site-green px-6 text-[15px] font-semibold text-site-contact-accent hover:bg-site-green focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-site-text max-[680px]:w-full"
+        href={telegramHref}
+        rel="noopener noreferrer"
+        target="_blank"
       >
         {isEnglish ? "Message on Telegram" : "Написать в Telegram"}
         <ArrowRight02StrokeRoundedIcon aria-hidden="true" size={20} />
-      </Button>
+      </a>
     </section>
   );
 };

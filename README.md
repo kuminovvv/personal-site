@@ -1,6 +1,17 @@
-# Personal Site — Frontend
+# Personal Site — Astro 2.0
 
-Статический персональный сайт на Next.js 16, React 19, Tailwind CSS 4, shadcn/ui и Hugeicons. Пять страниц (`/`, `/projects`, `/stack`, `/resume`, `/contacts`) формируются во время сборки, без API и базы данных.
+Новая версия персонального сайта Ильи Куминова на **Astro 7**: визуальное портфолио, RU/EN, интерактивная галерея проектов, модальные окна и анимации.
+
+Ветка `astro-v2` — перенос нового дизайна из `master` на Astro. Старая Next.js-версия осталась в `master`; первый Astro-порт — в `astro-rewrite`.
+
+## Стек
+
+- **Astro 7** — статическая генерация, маршруты, острова.
+- **React 19** — только для интерактивных островов: галерея, модалка, orbit-эффект, переключатель анимаций. Остальные секции — обычный HTML.
+- **Tailwind CSS 4** — стили и токены `site-*`.
+- **Vanilla JS** — тема, мобильное меню, language persistence.
+
+Статические секции не гидрируются. В браузер попадает только React-рантайм для островов, а не весь сайт.
 
 ## Локальная разработка
 
@@ -9,42 +20,79 @@ pnpm install
 pnpm dev
 ```
 
-Никакие переменные окружения, Go API и PostgreSQL не требуются. Для предварительного просмотра изменений используйте `pnpm dev`.
-
-## Контент и изображения
-
-- `src/shared/config/site-content.json` — основной источник текста, ссылок, каталога кейсов, внутренних страниц и стека. `src/widgets/stack-page/model/stack-content.ts` лишь импортирует данные оттуда.
-- `src/widgets/visual-portfolio/` — композиция и секции визуальной главной; контент и переводы находятся в `model/`.
-- `src/shared/config/project-cases.ts` — расширенные описания кейсов: контекст, решения, роль и технологии; каталожные записи связываются по постоянному `slug`.
-- `src/widgets/resume-page/model/` — редакционные данные расширенного резюме, `src/widgets/contacts-page/` — представление страницы контактов.
-- `public/design/` — локальные изображения и SVG. На главной используются SVG-постеры с анимацией слоёв; исходные растровые изображения сохранены для редактирования.
-- `src/shared/lib/content/get-site-content.ts` — типизированный доступ к импортированному JSON без HTTP-запросов.
-
-Для публикации изменений контента или изображений нужно повторно выполнить сборку. Прежняя панель Go `/admin` больше не связана с публичным сайтом; её исходники и данные сохранены отдельно в `../Backend/`.
-
-## Статическая сборка
+Сборка:
 
 ```powershell
-pnpm exec tsc --noEmit
-pnpm run lint
-pnpm run test:rules
-pnpm run build
-pnpm run test:responsive
-pnpm run test:integrity
+pnpm build
+pnpm preview
 ```
 
-`pnpm build` создаёт каталог `out/`, который можно разместить на статическом хостинге. `next start` не используется. Внутренние страницы экспортируются как `projects/index.html`, `stack/index.html`, `resume/index.html` и `contacts/index.html`; хостинг должен отдавать `index.html` для соответствующего пути с завершающим `/`.
+`dist/` — готовый статический сайт.
 
-`pnpm run test:responsive` проверяет все экспортированные маршруты на ширинах 320–1920 px в светлой и тёмной темах, включая выход текста за контейнеры. Для теста нужны Python 3, пакет `playwright` (`pip install playwright`) и установленный Chrome либо Chromium для Playwright.
+## Маршруты
 
-`pnpm run test:integrity` проверяет ссылки и якоря, заголовки, descriptions, изображения, уникальность slug и соответствие карточек опубликованным проектам; использует только стандартную библиотеку Python.
+- `/`, `/ru/` — русская главная;
+- `/en/` — английская главная;
+- `/projects/`, `/stack/`, `/resume/`, `/contacts/` и их `/ru/`, `/en/` версии;
+- 7 кейсов в каждом языке;
+- `404.html`.
 
-Серверная оптимизация Next.js отключена для совместимости со статическим экспортом; основные изображения предварительно преобразованы в WebP и выдаются напрямую из `public/`.
+## Интерактивность
 
-Сгенерированные страницы не зависят от Go/PostgreSQL. При изменении данных, изображений или кейсов повторно запустите `pnpm run build`. Канонические ссылки и sitemap используют публичный адрес `https://kuminovvv.com`; при изменении домена обновите конфигурацию metadata и sitemap.
+- **Галерея** — горизонтальный drag/scroll, клавиатура, открытие проекта;
+- **Модалка** — `<dialog>`, history API (`?project=slug`), focus trap, Escape;
+- **Orbit-эффект** — интерактивная SVG-композиция Creative Lab;
+- **Анимации** — IntersectionObserver + Web Animations API, с переключателем и `prefers-reduced-motion`;
+- **Тема и язык** — `localStorage`, без клиентского роутера.
 
-Композиция главной находится в `widgets/visual-portfolio`, общий документ — в `app/root-document.tsx`. Слайсы предоставляют публичный API через `index.ts`; внутренние импорты остаются относительными. ESLint проверяет границы слоёв, публичные импорты, отдельные файлы компонентов, форму props и отсутствие самостоятельных helpers/данных в TSX. `test:rules` проверяет эти ограничения на допустимых и ошибочных примерах.
+## Контент
 
-Конвенции проекта: `AGENTS.md`, `docs/README.md`, `docs/frontend-conventions.md`.
+- `src/shared/config/site-content.json` и `site-content.en.json` — основной контент;
+- `src/shared/config/project-cases.ts` и `project-cases.en.ts` — кейсы;
+- `src/widgets/visual-portfolio/model/` — тексты и данные визуальной главной;
+- `src/widgets/resume-page/model/`, `src/widgets/stack-page/model/` — данные внутренних страниц.
 
-Публикация автоматически выполняется по Git-тегам `vMAJOR.MINOR.PATCH` через GitHub Actions и GitHub Releases. Настройка и диагностика: [docs/deploy-by-tags.md](docs/deploy-by-tags.md).
+## Изображения и шрифты
+
+- `public/design/visual-portfolio/` — SVG/PNG для новой главной и модалок;
+- `public/design/` — изображения внутренних страниц;
+- `public/fonts/` — сабсеты Roboto Flex, Unbounded, Onest, Golos Text, Geist Mono;
+- `src/styles/fonts.css` — подключение шрифтов.
+
+Шрифты ограничены по используемым весам и символам. При добавлении новых языков или символов проверьте наличие глифов.
+
+## Проверки
+
+```powershell
+pnpm check                 # Astro + TypeScript
+pnpm run test:integrity    # ссылки, якоря, SEO, кейсы
+pnpm run test:responsive   # 36 маршрутов × 13 ширин × 2 темы
+pnpm run test:smoke        # галерея, модалка, тема, меню, motion, RU/EN
+```
+
+Для Python-проверок:
+
+```powershell
+pip install -r requirements-dev.txt
+```
+
+## Деплой
+
+- отдавать `dist/`;
+- gzip/Brotli для HTML/CSS/JS/SVG;
+- `Cache-Control: public, max-age=31536000, immutable` для `/_astro/*` и `/fonts/*`;
+- короткий cache для HTML;
+- `404.html` для неизвестных маршрутов.
+
+## Структура
+
+```text
+src/
+  pages/        маршруты и RU/EN-версии
+  layouts/      общий layout, тема, меню
+  components/   VisualHome, SiteHeader, SiteFooter, LanguageSwitcher
+  compat/       Link и Image вместо next/*
+  widgets/      visual-portfolio, projects-catalog, stack-page, resume-page, contacts-page
+  shared/       конфиг, контент, i18n, иконки, UI
+  styles/       Tailwind 4, токены, шрифты
+```

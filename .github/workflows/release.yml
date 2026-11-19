@@ -50,11 +50,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: TypeScript check
-        run: pnpm exec tsc --noEmit
-
-      - name: ESLint
-        run: pnpm run lint
+      - name: Astro and TypeScript check
+        run: pnpm run check
 
       - name: Build static website
         run: pnpm run build
@@ -75,12 +72,15 @@ jobs:
       - name: Check responsive pages
         run: pnpm run test:responsive
 
+      - name: Check interactive behavior
+        run: pnpm run test:smoke
+
       - name: Pack only static output
         shell: bash
         run: |
           set -euo pipefail
-          test -s out/index.html
-          tar -C out -czf "${RUNNER_TEMP}/site.tar.gz" .
+          test -s dist/index.html
+          tar -C dist -czf "${RUNNER_TEMP}/site.tar.gz" .
           sha256sum "${RUNNER_TEMP}/site.tar.gz"
 
       - name: Publish GitHub Release for server deployment

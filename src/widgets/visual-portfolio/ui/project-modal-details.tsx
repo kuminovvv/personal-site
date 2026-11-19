@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/compat/image";
 import type { ProjectDetail } from "../model/project-details";
 
 type ProjectModalDetailsProps = { detail: ProjectDetail; copy: { task: string; contribution: string; technologies: string; imageAlt: string; imageAltSuffix: string } };

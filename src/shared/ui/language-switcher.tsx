@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname } from "@/compat/navigation";
 import { localizeHref, type Locale } from "@/shared/lib/i18n/locale";
 import { getLanguageLocationSnapshot, getLanguageServerSnapshot, getLanguageSwitcherCopy, subscribeLanguageLocation } from "@/shared/lib/language-switcher";
 import { cn } from "@/shared/lib/utils";
