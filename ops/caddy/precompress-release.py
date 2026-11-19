@@ -58,7 +58,7 @@ def write_gzip(source: Path, target: Path) -> None:
             with gzip.GzipFile(fileobj=output, mode="wb", compresslevel=9, mtime=0, filename="") as compressed:
                 shutil.copyfileobj(source_file, compressed)
         with gzip.open(temporary, "rb") as compressed:
-            if hashlib.file_digest(compressed, "sha256").digest() != hashlib.sha256(source.read_bytes()).digest():
+            if hashlib.sha256(compressed.read()).digest() != hashlib.sha256(source.read_bytes()).digest():
                 raise ValueError(f"gzip verification failed: {source}")
         check_unchanged(source, before)
         os.chmod(temporary, 0o644)

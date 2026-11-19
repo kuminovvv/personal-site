@@ -2,7 +2,7 @@
 
 Новая версия персонального сайта Ильи Куминова на **Astro 7**: визуальное портфолио, RU/EN, интерактивная галерея проектов, модальные окна и анимации.
 
-Ветка `astro-v2` — перенос нового дизайна из `master` на Astro. Старая Next.js-версия осталась в `master`; первый Astro-порт — в `astro-rewrite`.
+Рабочая ветка `main` содержит Astro-версию, объединённую с `astro-v2`. Предыдущая Next.js-версия доступна в истории `master`.
 
 ## Стек
 
@@ -80,9 +80,14 @@ pip install -r requirements-dev.txt
 
 - отдавать `dist/`;
 - gzip/Brotli для HTML/CSS/JS/SVG;
-- `Cache-Control: public, max-age=31536000, immutable` для `/_astro/*` и `/fonts/*`;
+- `Cache-Control: public, max-age=31536000, immutable` для хешированных `/_astro/*`, сутки для `/fonts/*`;
 - короткий cache для HTML;
 - `404.html` для неизвестных маршрутов.
+
+Релизы публикуются тегами `v*` через GitHub Actions. На сервере `82.114.228.134`
+используется Caddy с автоматическим HTTPS и systemd-таймером обновлений.
+Первичная настройка и пошаговый порядок переключения DNS описаны в
+[`docs/deploy-by-tags.md`](docs/deploy-by-tags.md).
 
 ## Структура
 

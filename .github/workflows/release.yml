@@ -32,11 +32,18 @@ jobs:
             echo "Only stable SemVer tags (v1.2.3) can deploy." >&2
             exit 1
           }
-          git fetch --no-tags origin master
-          git merge-base --is-ancestor HEAD origin/master || {
-            echo "The tag must point to a commit on master." >&2
+          git fetch --no-tags origin main
+          git merge-base --is-ancestor HEAD origin/main || {
+            echo "The tag must point to a commit on main." >&2
             exit 1
           }
+
+      - name: Validate Caddy configuration and installer
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n ops/caddy/install.sh
+          docker run --rm -v "$PWD/ops/caddy:/etc/caddy:ro" caddy:2-alpine +            caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6
@@ -63,6 +70,11 @@ jobs:
         uses: actions/setup-python@v7
         with:
           python-version: "3.12"
+
+      - name: Check release installer and asset retention
+        run: |
+          python -m unittest discover -s ops/caddy -p 'test_*.py'
+          python -m unittest discover -s scripts -p 'test_deploy_latest_release.py'
 
       - name: Install browser dependencies
         run: |

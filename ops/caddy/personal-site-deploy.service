@@ -1,0 +1,19 @@
+[Unit]
+Description=Deploy latest verified personal-site GitHub Release
+Wants=network-online.target
+After=network-online.target caddy.service
+
+[Service]
+Type=oneshot
+User=site-deploy
+Group=site-deploy
+UMask=0022
+ExecStart=/usr/bin/python3 /usr/local/libexec/personal-site/deploy-latest-release.py
+ExecStartPost=-/usr/bin/python3 /usr/local/libexec/personal-site/preserve-static-assets.py --site-root /var/www/kuminovvv.com
+ExecStartPost=-/usr/bin/python3 /usr/local/libexec/personal-site/precompress-release.py --site-root /var/www/kuminovvv.com
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/www/kuminovvv.com
+

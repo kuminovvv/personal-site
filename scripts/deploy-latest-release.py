@@ -60,20 +60,33 @@ def download(url: str, target: Path, expected_hash: str) -> None:
 
 def unpack(archive: Path, destination: Path) -> None:
     with tarfile.open(archive, "r:gz") as package:
+        expanded_size = 0
         for member in package.getmembers():
             path = Path(member.name)
             if (not member.isfile() and not member.isdir()) or path.is_absolute() or ".." in path.parts:
                 raise ValueError(f"Unsafe archive member: {member.name}")
-        package.extractall(destination, filter="data")
-    for relative in ("index.html", "projects/index.html", "contacts/index.html"):
+            expanded_size += member.size
+            if expanded_size > MAX_BYTES * 8:
+                raise ValueError("Unpacked release exceeds size limit")
+            target = destination / path
+            if member.isdir():
+                target.mkdir(parents=True, exist_ok=True)
+            else:
+                target.parent.mkdir(parents=True, exist_ok=True)
+                source = package.extractfile(member)
+                if source is None:
+                    raise ValueError(f"Cannot read archive member: {member.name}")
+                with source, target.open("xb") as output:
+                    shutil.copyfileobj(source, output)
+    for relative in ("index.html", "projects/index.html", "contacts/index.html", "ru/index.html", "en/index.html", "404.html"):
         if not (destination / relative).is_file():
             raise ValueError(f"Missing expected file: {relative}")
-    if not (destination / "_next/static").is_dir():
-        raise ValueError("Missing static Next.js assets")
+    if not (destination / "_astro").is_dir():
+        raise ValueError("Missing static Astro assets")
 
 
 def check_site() -> None:
-    for path in ("/", "/projects/", "/projects/soobota/", "/contacts/"):
+    for path in ("/", "/ru/", "/en/", "/projects/", "/projects/soobota/", "/contacts/"):
         subprocess.run(
             ["curl", "--noproxy", "*", "--fail", "--silent", "--show-error", "--max-time", "12",
              "--resolve", "kuminovvv.com:443:127.0.0.1", "-o", "/dev/null", f"https://kuminovvv.com{path}"],
