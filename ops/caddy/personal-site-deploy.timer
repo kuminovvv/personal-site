@@ -2,8 +2,7 @@
 Description=Check personal-site GitHub Releases every two minutes
 
 [Timer]
-OnBootSec=1min
-OnCalendar=*:0/2
+OnCalendar=*-*-* *:0/2:00
 RandomizedDelaySec=15s
 Persistent=true
 Unit=personal-site-deploy.service
