@@ -1,4 +1,4 @@
-import Link from "@/compat/link";
+import Link from "next/link";
 import {ArrowUpRight01StrokeRoundedIcon} from "@/shared/lib/icons";
 import type {ProjectCase} from "@/shared/config/project-cases";
 import type {Locale} from "@/shared/lib/i18n/locale";

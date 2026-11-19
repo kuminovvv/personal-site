@@ -1,6 +1,6 @@
-"""Keep hashed Astro assets from older releases accessible after deployment.
+"""Keep hashed Next.js assets from older releases accessible after deployment.
 
-Caddy serves ROOT/current/_astro with immutable browser caching. Browsers
+Caddy serves ROOT/current/_next/static with immutable browser caching. Browsers
 may still request an older page's asset URLs during and after a new release.
 Copy older assets into the active release without replacing newer files.
 """
@@ -24,16 +24,16 @@ def preserve(site: Path) -> dict[str, int]:
     if current.parent != releases or not current.is_dir():
         raise ValueError("current must point to a release directory")
 
-    target_root = current / "_astro"
+    target_root = current / "_next" / "static"
     if not target_root.is_dir() or target_root.is_symlink():
-        raise ValueError("current release has no safe _astro directory")
+        raise ValueError("current release has no safe _next/static directory")
 
     copied = 0
     bytes_copied = 0
     for release in sorted(releases.iterdir()):
         if release == current or release.is_symlink() or not release.is_dir():
             continue
-        source_root = release / "_astro"
+        source_root = release / "_next" / "static"
         if source_root.is_symlink() or not source_root.is_dir():
             continue
         for source in source_root.rglob("*"):

@@ -1,4 +1,4 @@
-import Link from "@/compat/link";
+import Link from "next/link";
 import { localizeHref, type Locale } from "@/shared/lib/i18n/locale";
 import type { stackContent } from "../model/stack-content";
 

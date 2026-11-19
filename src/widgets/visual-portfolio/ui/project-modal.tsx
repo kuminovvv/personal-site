@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
+import { Button } from "@/shared/ui/button";
 import { createPortal } from "react-dom";
 import { isMotionReduced, subscribeMotionPreference } from "@/shared/lib/motion/preference";
 import { motionStyle, motionTokens } from "@/shared/lib/motion/tokens";
@@ -181,9 +182,9 @@ export const ProjectModal = (props: ProjectModalProps) => {
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
         <div ref={exitCursorRef} data-visible="false" className="absolute flex size-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-site-modal-border text-[28px] leading-none text-white opacity-0 data-[visible=true]:opacity-100">×</div>
       </div>
-      <button type="button" onClick={close} aria-label={copy.closeAria} className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:top-4 focus-visible:right-4 focus-visible:z-50 focus-visible:bg-white focus-visible:p-3 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--site-modal-text)]">
+      <Button variant="unstyled" size="unstyled" type="button" onClick={close} aria-label={copy.closeAria} className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:top-4 focus-visible:right-4 focus-visible:z-50 focus-visible:bg-white focus-visible:p-3 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--site-modal-text)]">
         {copy.close}
-      </button>
+      </Button>
       <div data-project-dialog-content className="relative mx-auto my-auto flex w-full max-w-[1240px] shrink-0 cursor-auto flex-col gap-[23px] px-11 py-6 max-[900px]:gap-5 max-[900px]:px-7 max-[640px]:gap-4 max-[640px]:px-5 max-[640px]:py-4">
         <ProjectModalHeader detail={detail} locale={locale} />
 

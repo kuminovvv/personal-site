@@ -14,7 +14,7 @@ from threading import Thread
 from playwright.sync_api import Error, sync_playwright
 
 
-OUT = Path(__file__).resolve().parents[1] / "dist"
+OUT = Path(__file__).resolve().parents[1] / "out"
 WIDTHS = (320, 360, 375, 390, 430, 580, 640, 768, 900, 1024, 1280, 1440, 1920)
 THEMES = ("light", "dark")
 
@@ -32,7 +32,6 @@ CHECK = """
     if (!value) continue;
 
     const parent = node.parentElement;
-    if (parent.closest(".sr-only")) continue;
     const style = getComputedStyle(parent);
     if (style.display === "none" || style.visibility === "hidden") continue;
     // The posters intentionally extend beyond the viewport inside a
@@ -90,14 +89,19 @@ class QuietServer(ThreadingHTTPServer):
 
 def run() -> int:
     if not (OUT / "index.html").exists():
-        print("Сначала выполните pnpm run build: нет dist/index.html")
+        print("Сначала выполните pnpm run build: нет Frontend/out/index.html")
         return 2
 
     routes = [
         "/" + str(path.parent.relative_to(OUT)).replace("\\", "/").strip("./") + "/"
         for path in OUT.rglob("index.html")
     ]
-    routes = sorted(set(routes))
+    # Legacy unprefixed pages redirect at document startup. Validate those
+    # redirects in test:i18n; layout measurements belong to stable locale URLs.
+    routes = sorted({
+        route for route in routes
+        if route.startswith(("/ru/", "/en/")) or route in ("/404/", "/_not-found/")
+    })
     server = QuietServer(("127.0.0.1", 0), Handler)
     Thread(target=server.serve_forever, daemon=True).start()
     failures = []
@@ -115,6 +119,7 @@ def run() -> int:
                         f"localStorage.setItem('portfolio-theme', '{theme}'); "
                         "localStorage.setItem('portfolio-locale', 'ru');"
                     )
+                    context.route("**/*__next*", lambda route: route.abort())
                     page = context.new_page()
                     try:
                         for width in WIDTHS:

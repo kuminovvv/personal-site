@@ -9,7 +9,7 @@ import {ProjectCard} from "./project-card";
 import {getVisualText} from "../model/locale-content";
 import {preloadProject} from "../model/preload-project";
 
-import {ProjectModal} from "./project-modal";
+import {ProjectModal} from "./lazy-project-modal";
 
 type ProjectGalleryProps = { locale?: Locale };
 

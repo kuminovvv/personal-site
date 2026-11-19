@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import Link from "@/compat/link";
+import Link from "next/link";
 import {
   ArrowRight02StrokeRoundedIcon,
   ArrowUpRight01StrokeRoundedIcon,

@@ -14,7 +14,7 @@ from urllib.parse import urljoin, urlparse
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "dist"
+OUT = ROOT / "out"
 ORIGIN = "https://example.test"
 
 
@@ -53,7 +53,7 @@ def output_file(path: str) -> Path:
 
 def check() -> int:
     if not (OUT / "index.html").exists():
-        print("Не найден dist/index.html — сначала выполните pnpm run build")
+        print("Не найден out/index.html — сначала выполните pnpm run build")
         return 2
 
     content = json.loads((ROOT / "src/shared/config/site-content.json").read_text(encoding="utf-8"))
@@ -116,6 +116,4 @@ def check() -> int:
 
 
 if __name__ == "__main__":
-    if hasattr(sys.stdout, "reconfigure"):
-        sys.stdout.reconfigure(encoding="utf-8")
     sys.exit(check())

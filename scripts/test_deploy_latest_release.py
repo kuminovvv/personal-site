@@ -14,13 +14,13 @@ SPEC.loader.exec_module(MODULE)
 
 
 class UnpackTests(unittest.TestCase):
-    def test_accepts_astro_export_and_rejects_path_traversal(self):
+    def test_accepts_next_export_and_rejects_path_traversal(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             archive = root / "site.tar.gz"
             files = (
                 "index.html", "projects/index.html", "contacts/index.html",
-                "ru/index.html", "en/index.html", "404.html", "_astro/test.hash.js",
+                "ru/index.html", "en/index.html", "404.html", "_next/static/test.hash.js",
             )
             with tarfile.open(archive, "w:gz") as package:
                 for name in files:
@@ -31,7 +31,7 @@ class UnpackTests(unittest.TestCase):
             target = root / "ok"
             target.mkdir()
             MODULE.unpack(archive, target)
-            self.assertTrue((target / "_astro" / "test.hash.js").is_file())
+            self.assertTrue((target / "_next" / "static" / "test.hash.js").is_file())
 
             with tarfile.open(archive, "w:gz") as package:
                 entry = tarfile.TarInfo("../outside.txt")

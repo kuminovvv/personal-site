@@ -1,4 +1,4 @@
-import Image from "@/compat/image";
+import Image from "next/image";
 
 type CatalogPreviewProps = {
   preview: string;

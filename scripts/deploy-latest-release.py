@@ -81,8 +81,8 @@ def unpack(archive: Path, destination: Path) -> None:
     for relative in ("index.html", "projects/index.html", "contacts/index.html", "ru/index.html", "en/index.html", "404.html"):
         if not (destination / relative).is_file():
             raise ValueError(f"Missing expected file: {relative}")
-    if not (destination / "_astro").is_dir():
-        raise ValueError("Missing static Astro assets")
+    if not (destination / "_next" / "static").is_dir():
+        raise ValueError("Missing static Next.js assets")
 
 
 def check_site() -> None:

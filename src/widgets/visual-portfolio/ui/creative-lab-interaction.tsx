@@ -1,4 +1,4 @@
-import Image from "@/compat/image";
+import Image from "next/image";
 import type { Locale } from "@/shared/lib/i18n/locale";
 import { useOrbitInteraction } from "../model/use-orbit-interaction";
 import { getVisualExtraText } from "../model/locale-content";

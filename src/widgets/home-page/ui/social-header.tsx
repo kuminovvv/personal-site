@@ -1,0 +1,1 @@
+export const SocialHeader = () => <div className="flex min-h-8 items-center gap-2.5 text-[15px]"><span aria-hidden="true" className="size-6 shrink-0 rounded-full bg-site-green" /><b>soobota</b></div>;

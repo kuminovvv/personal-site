@@ -1,45 +1,21 @@
-# Правила Personal Site (Astro 2.0)
+# Правила Personal Site (Frontend)
 
-`AGENTS.md` — точка входа. Актуальный стек и структура описаны в [README.md](README.md). Документы в `docs/` частично перенесены из Next.js-версии и носят исторический характер; при конфликте приоритет у этого файла и README.
+`AGENTS.md` — точка входа, подробные правила находятся в документации:
 
-## Стек
+1. **Перед задачей** прочитайте [карту документации](docs/README.md) и [локальные соглашения](docs/frontend-conventions.md).
+2. **По задаче** откройте только подходящие разделы `docs/` (компоненты, FSD, Next.js, производительность, тестирование и т. д.).
+3. **Перед завершением** проверьте затронутое поведение и выполните `pnpm exec tsc --noEmit`, `pnpm run lint`, `pnpm run build` (либо явно укажите, что не удалось проверить).
 
-- **Astro 7**, `output: "static"`, маршруты в `src/pages`.
-- **Tailwind CSS 4** + семантические токены `site-*` в `src/styles/`.
-- **React 19** только для интерактивных островов. Статические секции — обычный HTML/React-разметка без гидратации.
-- **Vanilla JS** для темы, меню и language persistence.
+Главные инварианты: стрелочные функции; один React-компонент на `.tsx`, без самостоятельных функций, словарей и констант рядом с ним (допускаются импорты и собственный тип props; обязательные экспорты Next.js — исключение); не более 250 строк в исходном файле; FSD, App Router в `src/app`; **Tailwind CSS 4 + shadcn/ui** для оформления компонентов (не создавать CSS Modules); переиспользование общих UI-компонентов без незапрошенного изменения дизайна. Подробности и исключения — в [frontend-conventions.md](docs/frontend-conventions.md).
 
-## Инварианты
+**Приоритет:** требования текущей задачи → `AGENTS.md` и `docs/frontend-conventions.md` → тематические документы. Документация частично перенесена из Soobota: её специфичные инструкции по деплою, инфраструктуре и продуктовым сценариям **не применяются** к Personal Site без отдельного подтверждения.
 
-1. **Не гидрируйте статику.** `client:*` допустим только для реально интерактивных блоков: галерея, модалка, orbit-эффект, motion switch. Новые статические секции не должны становиться островами.
-2. **Не импортируйте `next/*`.** Для ссылок и изображений есть `@/compat/link` и `@/compat/image`.
-3. **Контент — в данных.** Тексты, кейсы и переводы живут в `src/shared/config` и `src/widgets/*/model`, а не в JSX/Astro-разметке.
-4. **Один React-компонент на `.tsx`**, типы — в отдельных `.ts`. Для Astro-компонентов — один компонент на файл.
-5. **Максимум 250 строк** в исходном `.ts`, `.tsx`, `.astro`, `.css`, `.md`.
-6. **Стили** — Tailwind-классы и `site-*` токены. Не создавайте CSS Modules и отдельные CSS-файлы компонентов.
-7. **Изображения** — через `@/compat/image`; SVG для визуальной главной, растровые — в `public/design`.
-8. **Шрифты** — только из `public/fonts` и `src/styles/fonts.css`. Не подключайте Google Fonts по URL.
-9. **Доступность**: сохраняйте `aria-*`, `alt`, `aria-hidden` для декоративных элементов, focus trap и Escape в модалке.
-10. **RU/EN**: новые тексты добавляйте в оба словаря; не оставляйте русские строки в английских маршрутах.
+<!-- BEGIN:nextjs-agent-rules -->
 
-## Команды
+## This is NOT the Next.js you know
 
-```powershell
-pnpm check
-pnpm run build
-pnpm run test:integrity
-pnpm run test:responsive
-pnpm run test:smoke
-```
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
 
-## Структура
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
-- `src/pages` — маршруты и локали.
-- `src/layouts` — общий layout, тема, меню.
-- `src/components` — visual home, header, footer, language switcher.
-- `src/compat` — `Link` и `Image`.
-- `src/widgets/visual-portfolio` — новая визуальная главная и её интерактив.
-- `src/widgets/projects-catalog`, `stack-page`, `resume-page`, `contacts-page` — внутренние страницы.
-- `src/shared` — конфиг, i18n, иконки, UI.
-- `src/styles` — Tailwind, visual tokens, шрифты.
-- `public` — изображения, шрифты, robots, OG.
+<!-- END:nextjs-agent-rules -->

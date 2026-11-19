@@ -1,74 +1,58 @@
-# Публикация Astro-сайта через GitHub Releases и Caddy
+# Автоматическая публикация Next.js сайта через Caddy
 
-Исходники и пайплайн находятся в `main`. Теги `vMAJOR.MINOR.PATCH`
-запускают GitHub Actions, который проверяет Astro 7, собирает `dist/` и
-публикует `site.tar.gz` в GitHub Releases. Сервер `82.114.228.134`
-забирает архив по systemd-таймеру раз в две минуты, проверяет SHA-256,
-атомарно переключает `current` и откатывает при ошибке HTTPS-проверки.
-Доступ GitHub Actions к SSH, токены на VPS и Node.js на сервере не нужны.
+Сайт использует **Next.js 16** в режиме `output: "export"`.
+GitHub Actions собирает каталог `out/` и публикует `site.tar.gz` в GitHub Releases.
+На сервере `82.114.228.134` Caddy отдаёт файлы из
+`/var/www/kuminovvv.com/current` с автоматическим HTTPS.
+Серверный systemd-таймер раз в две минуты получает новый релиз, проверяет
+его SHA-256, обновляет символьную ссылку `current` и откатывает при ошибке
+проверки HTTPS.
 
-## Первичная установка на новом VPS
+## Новый релиз
 
-1. Подключитесь к серверу по SSH, проверьте ОС (скрипт поддерживает
-   Debian/Ubuntu), доступность портов 80/443 и отсутствие других сайтов,
-   для которых нужен текущий Nginx.
-2. Склонируйте репозиторий и запустите установку:
-
-   ```bash
-   git clone --branch main https://github.com/kuminovvv/personal-site.git
-   cd personal-site
-   bash ops/caddy/install.sh
-   ```
-
-3. Убедитесь, что `systemctl is-active caddy` возвращает `active`.
-   Скрипт устанавливает Caddy, unit- и timer-файлы из `ops/caddy/`,
-   создаёт пользователя `site-deploy` и каталоги в
-   `/var/www/kuminovvv.com`. После проверки конфигурации он выключает
-   Nginx, если тот обслуживал этот VPS. Если запуск Caddy не удался,
-   скрипт пытается запустить Nginx обратно.
-4. Перенаправьте записи A для `kuminovvv.com` и `www.kuminovvv.com`
-   на `82.114.228.134`. Удалите/измените старые AAAA, если есть.
-   Caddy автоматически запрашивает TLS-сертификаты после корректной DNS
-   маршрутизации. Проверьте `journalctl -u caddy -n 100 --no-pager`.
-
-**Не меняйте DNS, пока не подтверждён доступ к новому серверу и не
-проверено его состояние.** Прежний публичный origin — `178.212.15.69`.
-Домен на новом сервере будет отдавать 404, пока не опубликован первый релиз.
-Для переключения без простоя заранее загрузите готовые файлы в
-`current` или согласуйте короткое окно переезда.
-
-## Публикация релиза
-
-Выполните после настройки Caddy, DNS и HTTPS:
+После изменений в `main` создайте **новый** тег SemVer, например `v3.0.2`:
 
 ```bash
 git switch main
 git pull --ff-only
-git tag v3.0.1
-git push origin v3.0.1
+git tag v3.0.2
+git push origin v3.0.2
 ```
 
-GitHub Actions принимает только теги, коммит которых принадлежит `main`.
-После успешных проверок архив появляется в Releases. Новые теги должны
-увеличивать версию. Публикация коммитов без тегов сайт не обновляет.
+1. `.github/workflows/release.yml` проверяет, что тег принадлежит `main`.
+2. Выполняются TypeScript, ESLint, тесты, Next.js static export и проверка ссылок.
+3. Архив `site.tar.gz` публикуется в GitHub Releases вместе с SHA-256.
+4. `personal-site-deploy.timer` проверяет наличие нового релиза на сервере.
+5. Служба `personal-site-deploy.service` обновляет сайт атомарно, с
+   автоматическим восстановлением предыдущей версии при ошибке.
 
-## Проверка
+Изменения `main` без нового тега не публикуются. Для обновления достаточно
+создать и отправить новый тег, ручная загрузка на сервер не нужна.
+На VPS не нужны Node.js, pnpm, GitHub-токен или SSH-ключ GitHub Actions.
+
+## Первоначальная установка и диагностика
+
+На Ubuntu/Debian установите конфигурацию из `main`:
+
+```bash
+git clone --branch main https://github.com/kuminovvv/personal-site.git
+cd personal-site
+sudo bash ops/caddy/install.sh
+```
+
+DNS A-записи `kuminovvv.com` и `www.kuminovvv.com` должны вести на
+`82.114.228.134`; Caddy автоматически запрашивает и обновляет сертификаты.
 
 ```bash
 systemctl status caddy personal-site-deploy.timer
-systemctl start personal-site-deploy.service
+systemctl list-timers personal-site-deploy.timer
 journalctl -u personal-site-deploy.service -n 100 --no-pager
 cat /var/www/kuminovvv.com/.deployed-tag
 readlink -f /var/www/kuminovvv.com/current
-curl -I --resolve kuminovvv.com:443:127.0.0.1 https://kuminovvv.com/
-curl -I --resolve kuminovvv.com:443:127.0.0.1 https://kuminovvv.com/en/
+curl -I https://kuminovvv.com/
 ```
 
-Сервер хранит версии в `releases/`. `ops/caddy/preserve-static-assets.py`
-сохраняет старые хешированные файлы `/_astro/*` для клиентов с кешированным
-HTML, а `precompress-release.py` создаёт gzip/Brotli-версии файлов.
-Caddy также поддерживает динамическое zstd/gzip сжатие. Статика и
-сертификаты обслуживаются напрямую Caddy, без Nginx или Node.js.
-
-Исторические параметры старого Nginx описаны в
-[server-performance.md](server-performance.md).
+В `ops/caddy/Caddyfile` задано кеширование хешированных
+`/_next/static/*`, заголовки безопасности и компрессия.
+Предыдущие архивы сохраняются в `releases/`, чтобы можно было откатиться.
+Старые конфигурации Nginx остались только в истории Git.
