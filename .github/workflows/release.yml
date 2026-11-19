@@ -43,7 +43,7 @@ jobs:
         run: |
           set -euo pipefail
           bash -n ops/caddy/install.sh
-          docker run --rm -v "$PWD/ops/caddy:/etc/caddy:ro" caddy:2-alpine +            caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+          docker run --rm -v "$PWD/ops/caddy:/etc/caddy:ro" caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6

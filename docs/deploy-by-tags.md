@@ -44,8 +44,8 @@
 ```bash
 git switch main
 git pull --ff-only
-git tag v3.0.0
-git push origin v3.0.0
+git tag v3.0.1
+git push origin v3.0.1
 ```
 
 GitHub Actions принимает только теги, коммит которых принадлежит `main`.
